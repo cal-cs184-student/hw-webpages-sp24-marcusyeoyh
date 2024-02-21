@@ -1,7 +1,260 @@
 <html>
-	<head>
-	</head>
-	<body>
-		Homework 2 index.html here
-	</body>
+
+<head>
+	<title>CS184 Homework 2 Writeup</title>
+</head>
+
+<body style="margin: 30 auto; width: 80%">
+	<h1>CS184 Homework 2 Writeup</h1>
+	<h3>Written By: Marcus Yeo (3039760661)</h3>
+	<p><i>Hosted on:
+			<a href="https://cal-cs184-student.github.io/hw-webpages-sp24-marcusyeoyh/hw2/index.html"
+				target="_blank">https://cal-cs184-student.github.io/hw-webpages-sp24-marcusyeoyh/hw2/index.html</a>
+		</i></p>
+	<h2>Overview</h2>
+	<h3>Give a high-level overview of what you have implemented in this assignment. Think about what you have built as a whole. Share your thoughts on what interesting things you have learned from completing this assignment.</h3>
+	<p>In this assignment, I implemented de Casteljau’s Algorithm, which was used to evaluate Bezier curves, and later on, Bezier Surfaces. I then used the half-edge data structure to evaluate the area-weighted vertex normal for each vertex in a mesh, which allowed for Phong shading. Following that, I implemented the edge flip and edge split functions, which would later be used in the upsampling function that I implemented, which used Loop subdivision in order to convert a coarse polygon mesh into one of higher resolution.</p>
+	<p>This assignment gave me the cool opportunity to play around with the half-edge data structure and get really familiar with it. It allowed me to experience coding and exploring the different aspects that goes into upsampling as I had only ever seen the end product and not the many steps and different formulas that allow for the upsampling to occur. The implementation of area-weighted normal for every vertex was especially interesting to me as I had always been interested in learning about shading and how to create photo-realistic graphics and this section of the assignment allowed me to appreciate the complexity of shaders and how much they really improve the graphic and give it realism.</p>
+
+	<h2>Part 1</h2>
+	<h3>Briefly explain de Casteljau's algorithm and how you implemented it in order to evaluate Bezier curves.</h3>
+
+	<p>
+		De Casteljau’s Aglorithm evaluates a Bézier curve via a series of recursive linear interpolations to find n-1 new points given a set of n points and a parameter t. The algorithm gradually reduces the complexity of the problem until it reaches a single point which lies on the Bézier curve.
+	</p>
+	<p>
+		In the function evaluateStep(), given a vector<Vector2D> points, I took each pair of adjacent points in points and performed a linear interpolation between them at the given parameter t where <i>pi′=lerp(pi,pi+1,t)=(1−t)pi+t*pi+1</i>. This new point was then pushed into a vector<Vector2D> new_points and returned as the result after all point pairs were evaluated.
+	</p>
+
+	<h3>Take a look at the provided .bzc files and create your own Bezier curve with <b>6</b> control points of your choosing. Use this Bezier curve for your screenshots below.</h3>
+
+	<h4>Show screenshots of each step / level of the evaluation from the original control points down to the final evaluated point. Press E to step through. Toggle C to show the completed Bezier curve as well.</h4>
+
+	<!-- <h3>Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle.
+	</h3>
+	<p>Given that I am checking each sample within the bounding box of the triangle, my algorithm would be of the same
+		efficiency.</p>
+	<h3>basic/test4.svg</h3>
+	<img src="./media/task1/task1.png"
+		style="width: 50%; height: auto; display: block; margin-left: auto; margin-right: auto;" /> -->
+
+	<h2>Task 2: Antialiasing by Supersampling</h2>
+	<h3>Supersampling algorithm:</h3>
+	<p>First, we increased sample_buffer size to = width*height*sample rate. This ensures that the sample_buffer is
+		large enough to accommodate every subpixel that would be considered with supersampling. Then, we ran through
+		every pixel in the bounding box. For every pixel, run through each sub-pixel and determine if it's inside the
+		triangle using the inside() function. If it is, add it into the sample_buffer, assigning it with the
+		corresponding color.</p>
+	<p>After the sample_buffer is filled, resolve_to_framebuffer() is called. This function basically maps each pixel in
+		the framebuffer to all its relevant subpixels in the sample_buffer. The average color of all the subpixels for
+		that pixel is calculated, then added to the framebuffer.</p>
+	<h3>Data structures:</h3>
+	<p>Within the code, we declared a struct called Point, where
+		Point = {
+		float x, y;
+		size_t index;};</p>
+
+	<p>This allows us to populate the sample buffer easily using the index after the generation of sub-pixels (Point)
+		for each pixel. This index also later helps us find the corresponding pixel that each of these sub-pixels belong
+		to, so as to easily calculate the average color.</p>
+	<h3>Rasterization pipeline modification:</h3>
+	<p>As compared to task 1, which directly draws onto the framebuffer when it has found the correct color for each
+		pixel, we modified the pipeline as follows:
+	<ul>
+		<li>When rasterize_triangle() is called, every color of the sub-pixels is drawn onto the sample buffer</li>
+		<li>resolve_to_framebuffer() then translates the sample buffer to the frame buffer so the image is displayed
+			with the average color of sub-pixels</li>
+	</ul>
+
+	</p>
+	<h3>Supersampling to achieve antialiasing:</h3>
+	<p>When we find the average color of each pixel using sub-pixels (number dependent on sample rate), each pixel at
+		the edge of the shape is rendered as a color that lies between the two color boundaries. This creates a blurring
+		effect at the edges, and causes the overall image to look smoother and more continuous, rather than pixelated
+		and jaggy.
+	</p>
+	<h3>
+		png screenshots of basic/test4.svg
+	</h3>
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/task2/rate1.png" alt="Description of Image 1" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Sample Rate = 1</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/task2/rate4.png" alt="Description of Image 2" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Sample Rate = 4</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/task2/rate16.png" alt="Description of Image 3" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Sample Rate = 16</figcaption>
+		</figure>
+	</div>
+	<p>As the sample rate increases, it can be observed that the edges of the triangle become increasingly
+		continuous,and less pixelated. This is because an increase in sample rate results in an increase in sub-pixels
+		considered for each pixel, resulting in a more accurate average value of the boundary colors that each pixel
+		represents. This causes the pixels to have a more continuous color gradient.
+	</p>
+
+	<h2>Task 3: Transforms</h2>
+	<h3>myrobot.svg</h3>
+	<img src="./media/task3/task3.png"
+		style="width: 50%; height: auto; display: block; margin-left: auto; margin-right: auto;" />
+	<p>In this svg, we were trying to make the robot do the signature robot pose with its arms. To achieve this, we
+		first rotated the outer arms by 90 degrees, then changed the translation to (-50 20) and (50 -20) for the two
+		arms.</p>
+
+
+	<h2>Task 4: Barycentric Coordinates</h2>
+	<h3>What barycentric coordinates are:</h3>
+	<img src="./media/task4/triangle.png"
+		style="width: 50%; height: auto; display: block; margin-left: auto; margin-right: auto;" />
+	<p>Barycentric Coordinates linearly interpolate values at vertices, where a point in a triangle (defined by three
+		vertices) can be represented as a mathematical expression representing the proportional distances from the
+		vertices. This can be observed from the triangle image, the three vertices are colored green, yellow and red we
+		can see that the points closer to the red vertex are mostly red due to the weight of the red vertex being larger
+		than the other weights due to a closer proximity to the red vertex. The same is observed for the green and
+		yellow vertices. In the center where pixels are almost equidistant from all vertices, the color observed is a
+		blend between the three colors.</p>
+	<h3>svg/basic/test7.svg with default viewing parameters and sample rate 1</h3>
+	<img src="./media/task4/test7.png" style="width: 50%; height: auto;" />
+
+
+	<h2>Task 5: "Pixel Sampling" for Texture Mapping</h2>
+	<h3> Pixel sampling and how we implemented it to perform texture mapping
+	</h3>
+	<p>Pixel sampling involves using barycentric coordinates to map the relative distance between the points and the 3
+		boundary coordinates in the sample and texture space relatively.</p>
+	<p>Nearest neighbor: Use barycentric coordinates to find the corresponding coordinate in the texture space, and use
+		the
+		color of that coordinate.</p>
+	<p>Bilinear neighbor: By using the relative distance of the coordinate to its 4 nearest neighbors in the texture
+		map,
+		compute two colors by using 2 linear interpolations in the horizontal space, then using the results to perform a
+		vertical interpolation to get the final color.</p>
+	<h3>Comparing bilinear sampling and nearest sampling</h3>
+	<h4>Bilinear sampling</h4>
+	<div style="display: flex; justify-content: space-around; align-items: center;margin: 0 auto; width: 70%;"">
+		<figure style=" margin: 20px;">
+		<img src="media/task5/bilinear1.png" alt="Description of Image 2" style="width: 100%; height: auto;">
+		<figcaption style="text-align: center;">Sample Rate = 1</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/task5/bilinear16.png" alt="Description of Image 3" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Sample Rate = 16</figcaption>
+		</figure>
+	</div>
+	<h4>Nearest pixel sampling</h4>
+	<div style="display: flex; justify-content: space-around; align-items: center;margin: 0 auto; width: 70%;"">
+		<figure style=" margin: 20px;">
+		<img src="media/task5/nearest1.png" alt="Description of Image 2" style="width: 100%; height: auto;">
+		<figcaption style="text-align: center;">Sample Rate = 1</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/task5/nearest16.png" alt="Description of Image 3" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Sample Rate = 16</figcaption>
+		</figure>
+	</div>
+	<p>At both the 1 sample per pixel and the 16 samples per pixel screenshot, we can observe that the use of bilinear
+		sampling achieves a better looking image as compared to the nearest sampling method. This would be due to the
+		linear
+		interpolation done in bilinear sampling, resulting in lower frequencies in the resultant signal as compared to
+		nearest sampling, which can result in high frequency signals and hence a less smooth image.</p>
+
+	<p>There will be a larger difference in the two methods at lower sampling rates (1 sample) as compared to higher
+		sampling rates (16 samples). This is due to the supersampling algorithm that we already have in place. This
+		means
+		that both the nearest sampling and bilinear sampling have some form of existing interpolation and the linear
+		interpolation from the bilinear sampling will be less evident.</p>
+
+
+
+	<h2>Task 6: "Level Sampling" with Mipmaps for Texture Mapping</h2>
+	<h3> What level sampling is and how we implemented it for texture mapping.
+	</h3>
+	<p>Level sampling involves storing a cache of different levels of texture samples, each with different resolutions
+		such that it can be applied to the space depending on the “stretch” of the texture. </p>
+	<p>To implement this, we first found the level (floating number) that corresponds to each pixel in the screen space.
+		To do this, we use barycentric coordinates to find the rate of change in the x and y direction of each pixel in
+		the texture space, then apply the formula to find the maximum “stretch” (L). Then, the level is computed by
+		using level (D) = log2(L).</p>
+	<p>To find a specific level, simply round D to the nearest integer.
+	</p>
+	<p>To compute the mipmap level as a continuous number, we first find the normalized distance (0<=s<=1) between D and
+			its neighboring levels. We then found the colors of each pixel at the upper and lower mipmap levels, and
+			computed a weighted average of the two colors using s. </p>
+			<h3>Tradeoffs between speed, memory usage, and antialiasing power between the three various techniques
+				(pixel sampling, level sampling, sample rate).
+			</h3>
+
+			<p>Speed:
+			<ul>
+				<li>Pixel Sampling: Nearest Neighbour Sampling is the fastest since it requires accessing only a singly
+					texel from the texture. On the other hand, Bilinear filtering requires accessing four texels, and
+					trilinear filtering requires accessing eight texels across two mipmap levels, hence as complexity of
+					filtering
+					increases, speed decreases.</li>
+				<li>Level Sampling: using mipmaps can improve rendering speed because textures are sampled from
+					lower-resolution
+					images that match the screen size of the object, reducing the number of texture lookups. Mipmap
+					level
+					selection itself adds some computational overhead (get_level() fn) but is offset by reduced texture
+					sampling
+					cost.</li>
+				<li>Sample Rate: Increasing the number of samples per pixel will reduce rendering speed as they require
+					more
+					samples per pixel, which will have to be averaged out.</li>
+			</ul>
+
+	</p>
+	<p>Memory Usage:
+	<ul>
+		<li>Pixel Sampling: This is affected by the texture’s resolution and presence of mipmaps. Nearest neighbor does
+			not require much memory usage as compared to bilinear or trilinear, which have to store much more
+			information about the surrounding texels and even different mipmaps in the case of trilinear filtering</li>
+		<li>Level Sampling: mipmaps increase memory usage because they require storing additional, smaller versions of
+			the texture.</li>
+		<li>Sample Rate: increased sample counts require more memory for framebuffer storage. Supersampling increases
+			memory usage linearly with the number of samples.</li>
+	</ul>
+	</p>
+	<p>Antialiasing Power:
+	<ul>
+		<li>Pixel Sampling: No antialiasing present in nearest neighbour, hence artifacts exist. Bilinear and Trilinear
+			filtering offer improved antialiasing by smoothing out the textures and reduce the visibility of artifacts
+			such as jaggies.</li>
+		<li>Level Sampling: significantly reduced aliasing artifacts by ensuring that sampling is done from an image
+			that closely matches the pixel density of the rendered object. Trilinear filtering between mipmap levels
+			further smooths the transition between levels, offering a higher quality antialiasing effect</li>
+		<li>Sampling Rate: Increasing the number of samples directly increases antialiasing power as the more samples
+			per pixel taken means a more accurate representation of the sample image. This reduces artifacts such as
+			jaggies and moire patterns.</li>
+	</ul>
+	</p>
+	<h3>test7.svg (our own png)</h3>
+	<div style="display: flex; justify-content: space-around; align-items: center;margin: 0 auto; width: 70%;"">
+		<figure style=" margin: 20px;">
+		<img src="media/task6/zeronearest.png" alt="Description of Image 2" style="width: 100%; height: auto;">
+		<figcaption style="text-align: center;">L_ZERO and P_NEAREST</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/task6/zerolinear.png" alt="Description of Image 3" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">L_ZERO and P_LINEAR</figcaption>
+		</figure>
+	</div>
+	<div style="display: flex; justify-content: space-around; align-items: center;margin: 0 auto; width: 70%;"">
+		<figure style=" margin: 20px;">
+		<img src="media/task6/nearestnearest.png" alt="Description of Image 2" style="width: 100%; height: auto;">
+		<figcaption style="text-align: center;">L_NEAREST and P_NEAREST</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/task6/nearestlinear.png" alt="Description of Image 3" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">L_NEAREST and P_LINEAR</figcaption>
+		</figure>
+	</div>
+
+
+
+</body>
+
 </html>
