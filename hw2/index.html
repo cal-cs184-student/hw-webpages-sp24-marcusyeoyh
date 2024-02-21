@@ -16,7 +16,7 @@
 	<p>In this assignment, I implemented de Casteljau’s Algorithm, which was used to evaluate Bezier curves, and later on, Bezier Surfaces. I then used the half-edge data structure to evaluate the area-weighted vertex normal for each vertex in a mesh, which allowed for Phong shading. Following that, I implemented the edge flip and edge split functions, which would later be used in the upsampling function that I implemented, which used Loop subdivision in order to convert a coarse polygon mesh into one of higher resolution.</p>
 	<p>This assignment gave me the cool opportunity to play around with the half-edge data structure and get really familiar with it. It allowed me to experience coding and exploring the different aspects that goes into upsampling as I had only ever seen the end product and not the many steps and different formulas that allow for the upsampling to occur. The implementation of area-weighted normal for every vertex was especially interesting to me as I had always been interested in learning about shading and how to create photo-realistic graphics and this section of the assignment allowed me to appreciate the complexity of shaders and how much they really improve the graphic and give it realism.</p>
 
-	<h2>Part 1</h2>
+	<h2>Part 1: Bezier Curves with 1D de Casteljau Subdivision (10 pts)</h2>
 	<h3>Briefly explain de Casteljau's algorithm and how you implemented it in order to evaluate Bezier curves.</h3>
 
 	<p>
@@ -29,6 +29,17 @@
 	<h3>Take a look at the provided .bzc files and create your own Bezier curve with <b>6</b> control points of your choosing. Use this Bezier curve for your screenshots below.</h3>
 
 	<h4>Show screenshots of each step / level of the evaluation from the original control points down to the final evaluated point. Press E to step through. Toggle C to show the completed Bezier curve as well.</h4>
+
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part1/original.png" alt="Original Control Point" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Original Control Point</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/part1/step1.png" alt="First call to evaluateStep()" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">First call to evaluateStep()</figcaption>
+		</figure>
+	</div>
 
 	<!-- <h3>Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle.
 	</h3>
