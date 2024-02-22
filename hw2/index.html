@@ -13,8 +13,11 @@
 		</i></p>
 	<h2>Overview</h2>
 	<h3>Q: Give a high-level overview of what you have implemented in this assignment. Think about what you have built as a whole. Share your thoughts on what interesting things you have learned from completing this assignment.</h3>
-	<p>In this assignment, I implemented de Casteljau’s Algorithm, which was used to evaluate Bezier curves, and later on, Bezier Surfaces. I then used the half-edge data structure to evaluate the area-weighted vertex normal for each vertex in a mesh, which allowed for Phong shading. Following that, I implemented the edge flip and edge split functions, which would later be used in the upsampling function that I implemented, which used Loop subdivision in order to convert a coarse polygon mesh into one of higher resolution.</p>
-	<p>This assignment gave me the cool opportunity to play around with the half-edge data structure and get really familiar with it. It allowed me to experience coding and exploring the different aspects that goes into upsampling as I had only ever seen the end product and not the many steps and different formulas that allow for the upsampling to occur. The implementation of area-weighted normal for every vertex was especially interesting to me as I had always been interested in learning about shading and how to create photo-realistic graphics and this section of the assignment allowed me to appreciate the complexity of shaders and how much they really improve the graphic and give it realism.</p>
+	<p>In this assignment, I implemented de Casteljau’s Algorithm, which was used to evaluate Bezier curves, and later on, Bezier Surfaces. I then used the half-edge data structure to navigate triangle meshes, which enabled me to evaluate the area-weighted vertex normal for each vertex in a given mesh. The calculation of these vertex normals allowed for Phong shading to be implemented. Following that, I implemented the edge flip and edge split local mesh operations, which involved a ton of pointer reassignments. These functions would later be incorporated in the upsampling function that I implemented, which uses Loop subdivision in order to convert a coarse polygon mesh into one of higher resolution.</p>
+	<p>
+		This assignment gave me the opportunity to experience the rasterization of 3D graphics in two ways, one using Bezier Surfaces, and another using triangle meshes. This allowed me to dive deep into the implementations and mathematics behind the two methods and learn about the pros and cons of both of them.
+	</p>
+	<p>This assignment allowed me to learn about and appreciate the sheer amount of mathematics that goes on behind the scenes before a object can be rendered as a 3D object on screen. It also gave me the cool opportunity to play around with the half-edge data structure and get really familiar with it. It allowed me to experience coding and exploring the different aspects that goes into upsampling as I had only ever seen the end product and not the many steps and different formulas that allow for the upsampling to occur. The implementation of area-weighted normal for every vertex was especially interesting to me as I had always been interested in learning about shading and how to create photo-realistic graphics and this section of the assignment allowed me to appreciate the complexity of shaders and how much they really improve the graphic and give it realism.</p>
 
 	<h2>Part 1: Bezier Curves with 1D de Casteljau Subdivision (10 pts)</h2>
 	<h3>Q: Briefly explain de Casteljau's algorithm and how you implemented it in order to evaluate Bezier curves.</h3>
@@ -23,7 +26,7 @@
 		De Casteljau’s Aglorithm evaluates a Bézier curve via a series of recursive linear interpolations to find n-1 new points given a set of n points and a parameter t. The algorithm gradually reduces the complexity of the problem until it reaches a single point which lies on the Bézier curve.
 	</p>
 	<p>
-		In the function evaluateStep(), given a vector<Vector2D> points, I took each pair of adjacent points in points and performed a linear interpolation between them at the given parameter t where <i>pi′=lerp(pi,pi+1,t)=(1−t)pi+t*pi+1</i>. This new point was then pushed into a vector<Vector2D> new_points and returned as the result after all point pairs were evaluated.
+		In the function evaluateStep(), given a vecto of Vector2D elements <i>points</i>, I took each pair of adjacent points in <i>points</i> and performed a linear interpolation between them at the given parameter t where <i>pi′=lerp(pi,pi+1,t)=(1−t)pi+t*pi+1</i>. This new point was then pushed into a vector<Vector2D> new_points and returned as the result after all point pairs were evaluated.
 	</p>
 
 	<h3>Take a look at the provided .bzc files and create your own Bezier curve with <b>6</b> control points of your choosing. Use this Bezier curve for your screenshots below.</h3>
@@ -76,7 +79,7 @@
 
 	<h2>Part 2: Bezier Surfaces with Separable 1D de Casteljau (15 pts)</h2>
 	<h3>Q: Briefly explain how de Casteljau algorithm extends to Bezier surfaces and how you implemented it in order to evaluate Bezier surfaces.</h3>
-	<p>De Casteljau’s Algorithm works similarly in Bezier surfaces as in curves except that it is done in two dimensions, where many Bezier curves are first plotted with De Casteljau’s Algorithm according to their rows using provided parameter u. The resultant points on each curve acts as new control points for another run of De Casteljau’s Algorithm using another provided parameter v, which plots the Bezier surface.</p>
+	<p>De Casteljau’s Algorithm works similarly in Bezier surfaces as in curves except that it is done in two dimensions given a 2D nXn grid of control points, where many Bezier curves are first plotted with De Casteljau’s Algorithm according to their rows in the grid using provided parameter u. The resultant points on each curve for a given u acts as new control points for a second iteration of De Casteljau’s Algorithm using another provided parameter v, which, for values 0 to 1, plots the Bezier surface.</p>
 	<p>Similar to Part 1, I implemented the one step De Casteljau Algorithm in bezierPatch::evaluateStep(), which returns a vector of intermediate Vector3D points as a result of linear interpolation with the provided parameter t.</p>
 	<p>
 		I then implemented evaluate1D(), which for a given vector of Vector3D control points, recursively calls evaluateStep() until only one point remains, this is the point that exists on the bezier curve for a particular row of the Bezier surface.
@@ -96,7 +99,7 @@
 		Having coordinates of all 3 vertices, I found the vectors of two adjacent edges and obtained their cross products. This gives me the area-weighted normal for that particular triangle face. I then add the area-weighted normal to a initially zero vector n, which stores a running sum of area-weighted normal of the triangle faces incident to the vertex.
 	</p>
 	<p>
-		I then progress halfedge e to the next of its twin and repeat the above process until we return to the original halfedge.
+		I then progress halfedge e to the next of its twin and repeat the above process until we return to the original halfedge. This allows us to calculate the accumulative sum of the area-weighted normals of all the faces adjacent to v.
 	</p>
 	<p>
 		We then normalize the vector n and return it.
@@ -121,13 +124,13 @@
 	<h3>Q: Briefly explain how you implemented the edge flip operation and describe any interesting implementation / debugging tricks you have used.</h3>
 
 	<p>
-		I first started with an if loop to check if the edge is on a boundary loop and return the edge unchanged if it was.
+		I first started with an <i>if</i> loop to check if the edge is on a boundary edge and return the edge unchanged if it is.
 	</p>
 	<p>
 		If the edge is not a boundary loop, I then find the halfedge associated with e0 and iterate through all the halfedges in the simple mesh, saving them as iterators h1 to h6. 
 	</p>
 	<p>
-		I then found all the other elements of the simple mesh and saved them as iterators, including edges e1-e6, vertices a,b,c,d and faces f1 and f2.
+		I then found all the other elements of the simple mesh that would need to have attributes reassigned and saved them as iterators, including edges e1-e6, vertices a,b,c,d and faces f1 and f2.
 	</p>
 	<p>
 		Having drawn out the resultant mesh as a result of edge flip, I then reassigned the twin, next, vertex, edge and face pointers for all halfedges to their new values.
@@ -155,20 +158,23 @@
 	<h3>Q: Write about your eventful debugging journey, if you have experienced one.</h3>
 
 	<p>
-		I initially did not know that I had to update the halfedge pointer of the edges, vertices and faces and instead did the updating wrongly. This caused the faces to not update correctly and the entire face to disappear when flip edge was called.
+		I initially forgot to update the halfedge pointer of the edges, vertices and faces and instead did the updating wrongly. This caused the faces of the triangle meshes involved to not update correctly and the entire face to disappear when flip edge was called.
+	</p>
+	<p>
+		This was resolved after reading the documentation again and multiple rounds of trial and error.
 	</p>
 
 	<h2>Task 5: Edge Split (15 pts)</h2>
 	<h3> Q: Briefly explain how you implemented the edge split operation and describe any interesting implementation / debugging tricks you have used.
 	</h3>
-	<p>Similar to Part 4, I started with an if statement to check if the edge was a boundary edge and simply return the vertex associated with the edge’s halfedge if it did.</p>
+	<p>Similar to Part 4, I started with an if statement to check if the edge was a boundary edge and simply return the vertex associated with the edge’s halfedge if it was.</p>
 	<p>I again then found the halfedge associated with e0 and iterated through all the halfedges in the simple mesh, saving them as iterators h1 to h6. </p>
 	<p>I then found all the other elements of the simple mesh and saved them as iterators, including edges e1-e6, vertices a,b,c,d and faces f1 and f2.</p>
 	<p>
-		Since edge split requires the creation of new elements, I also initialized new iterators for halfedges h7-h12, vertex m, edges e7-e9 and faces f3 and f4.
+		Since edge split requires the creation of new elements, I also initialized new halfedges, vertices, edges and faces for halfedges h7-h12, vertex m, edges e7-e9 and faces f3 and f4.
 	</p>
 	<p>
-		Having drawn out the resultant mesh as a result of edge flip, I then reassigned the twin, next, vertex, edge and face pointers for all halfedges to their new values.
+		Having drawn out the resultant mesh and the new variables of all the elements as a result of edge split, I then reassigned the twin, next, vertex, edge and face pointers for all halfedges to their new values.
 	</p>
 	<p>
 		I then updated the halfedge attributes for all edges, vertices and faces to their new halfedges before returning the new vertex m.
@@ -223,9 +229,9 @@
 	<h2>Task 6: Loop Subdivision for Mesh Upsampling (25 pts)</h2>
 	<h3>Q: Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.
 	</h3>
-	<p>Firstly, using the Loop subdivision rule, I calculated the new positions for all original vertices in the mesh, saving it under the newPosition variable for each vertex. I also set the isNew variable for each vertex in the original mesh as FALSE, which will come into use in subsequent part.</p>
+	<p>Firstly, using the Loop subdivision rule, I calculated the new positions for all original vertices in the mesh, saving it under the newPosition variable for each vertex. I also set the isNew variable for each vertex in the original mesh as FALSE, which will come into use in the later parts.</p>
 	<p>Secondly, for every edge in the original mesh, I computed the new Vector3D position for each new vertex that would be created at the midpoint of the edge when splitEdge is called. The coordinates are then stored in the newPosition variable for the edge to be assigned later. I also labelled all edges in the original mesh as FALSE for their isNew variable.</p>
-	<p>I then iterated through all the edges of the original mesh and split them using splitEdge(). I then labelled the new vertex V’s isNew variable as false and its newPosition variable with the newPosition variable of the edge that has been split. I then labelled the isNew variable of the new edges created as a result of the edge split as TRUE.
+	<p>I then iterated through all the edges of the original mesh and split them using splitEdge(). I then labelled the new vertex v’s isNew variable as false and its newPosition variable with the newPosition variable of the edge that has been split. I then labelled the isNew variable of the new edges created as a result of the edge split as TRUE.
 	</p>
 	<p>
 		I then iterated through all edges in the mesh and called flipEdge() on those edges that had isNew set as TRUE and connected one vertex with isNew as FALSE and another with isNew as TRUE. This completes the 4-1 subdivision for every triangle in the mesh.
@@ -296,7 +302,7 @@
 	</div>
 
 	<p>
-		The asymmetrical shape as a result of repeated subdivision is due to each face on the cube not having symmetrical edges due to the diagonal edge across each face, which does not point in the same direction for all faces. Hence when splitEdge() is called on each edge, it results in an asymmetrical splitting of the edges in the original cube, and since vertex position is determined by surrounding position of nearby vertices, the subdivision process will exacerbate these discrepancies due surrounding vectors not all being equidistant from the vertex, resulting in uneven weights.
+		The asymmetrical shape as a result of repeated subdivision is due to each face on the cube not having identical edges due to the diagonal edge across each face, which does not point in the same direction for all faces. Hence when splitEdge() is called on each edge, it results in an asymmetrical splitting of the edges in the original cube, and since vertex position is determined by surrounding position of nearby vertices, the subdivision process will exacerbate these discrepancies due to the surrounding vectors not all being equidistant from the vertex, resulting in uneven weights and a asymetrical shape as a result.
 	</p>
 
 	<h3>
