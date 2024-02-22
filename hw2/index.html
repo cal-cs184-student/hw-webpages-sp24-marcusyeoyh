@@ -12,12 +12,12 @@
 				target="_blank">https://cal-cs184-student.github.io/hw-webpages-sp24-marcusyeoyh/hw2/index.html</a>
 		</i></p>
 	<h2>Overview</h2>
-	<h3>Give a high-level overview of what you have implemented in this assignment. Think about what you have built as a whole. Share your thoughts on what interesting things you have learned from completing this assignment.</h3>
+	<h3>Q: Give a high-level overview of what you have implemented in this assignment. Think about what you have built as a whole. Share your thoughts on what interesting things you have learned from completing this assignment.</h3>
 	<p>In this assignment, I implemented de Casteljau’s Algorithm, which was used to evaluate Bezier curves, and later on, Bezier Surfaces. I then used the half-edge data structure to evaluate the area-weighted vertex normal for each vertex in a mesh, which allowed for Phong shading. Following that, I implemented the edge flip and edge split functions, which would later be used in the upsampling function that I implemented, which used Loop subdivision in order to convert a coarse polygon mesh into one of higher resolution.</p>
 	<p>This assignment gave me the cool opportunity to play around with the half-edge data structure and get really familiar with it. It allowed me to experience coding and exploring the different aspects that goes into upsampling as I had only ever seen the end product and not the many steps and different formulas that allow for the upsampling to occur. The implementation of area-weighted normal for every vertex was especially interesting to me as I had always been interested in learning about shading and how to create photo-realistic graphics and this section of the assignment allowed me to appreciate the complexity of shaders and how much they really improve the graphic and give it realism.</p>
 
 	<h2>Part 1: Bezier Curves with 1D de Casteljau Subdivision (10 pts)</h2>
-	<h3>Briefly explain de Casteljau's algorithm and how you implemented it in order to evaluate Bezier curves.</h3>
+	<h3>Q: Briefly explain de Casteljau's algorithm and how you implemented it in order to evaluate Bezier curves.</h3>
 
 	<p>
 		De Casteljau’s Aglorithm evaluates a Bézier curve via a series of recursive linear interpolations to find n-1 new points given a set of n points and a parameter t. The algorithm gradually reduces the complexity of the problem until it reaches a single point which lies on the Bézier curve.
@@ -28,7 +28,7 @@
 
 	<h3>Take a look at the provided .bzc files and create your own Bezier curve with <b>6</b> control points of your choosing. Use this Bezier curve for your screenshots below.</h3>
 
-	<h4>Show screenshots of each step / level of the evaluation from the original control points down to the final evaluated point. Press E to step through. Toggle C to show the completed Bezier curve as well.</h4>
+	<h4>Q: Show screenshots of each step / level of the evaluation from the original control points down to the final evaluated point. Press E to step through. Toggle C to show the completed Bezier curve as well.</h4>
 
 	<div style="display: flex; justify-content: space-around; align-items: center;">
 		<figure style="margin: 20px;">
@@ -60,157 +60,163 @@
 			<figcaption style="text-align: center;">Fifth call to evaluateStep()</figcaption>
 		</figure>
 	</div>
-	<div style="display: flex; justify-content: space-around; align-items: center;">
-		<figure style="margin: 20px;">
-			<img src="media/part1/step6.png" alt="Completed Bezier Curve with all evaluated points" style="width: 100%; height: auto;">
-			<figcaption style="text-align: center;">Completed Bezier Curve with all evaluated points</figcaption>
+	<img src="media/part1/step6.png"
+	style="width: 50%; height: auto; display: block; margin-left: auto; margin-right: auto;" />
+	<figcaption style="text-align: center;">Completed Bezier Curve with all evaluated points</figcaption>
+
+	<h4>Q: Show a screenshot of a slightly different Bezier curve by moving the original control points around and modifying the parameter t via mouse scrolling.</h4>
+	<div style="text-align: center;">
+		<figure style="display: inline-flex; justify-content: center; align-items: center; gap: 20px;">
+			<img src="media/part1/ctrlptmoved1.png" alt="Different Bezier Curves obtained when control points are moved around with different t values." style="width: auto; height: auto; max-width: 45%;">
+			<img src="media/part1/ctrlptmoved2.png" alt="Different Bezier Curves obtained when control points are moved around with different t values." style="width: auto; height: auto; max-width: 45%;">
 		</figure>
+		<figcaption style="display: block; width: 100%; text-align: center;">Different Bezier Curves obtained when control points are moved around with different t values.</figcaption>
 	</div>
+	
 
-	<h4>Show a screenshot of a slightly different Bezier curve by moving the original control points around and modifying the parameter t via mouse scrolling.</h4>
-
-	<div style="display: flex; justify-content: space-around; align-items: center;">
-		<figure style="margin: 20px;">
-			<!-- Parent figure element for both images -->
-			<figure style="margin: 0; display: inline-block;">
-				<img src="media/part1/ctrlptmoved1.png" alt="Different Bezier Curves obtained when control points are moved around with different t values." style="width: 100%; height: auto;">
-			</figure>
-			<figure style="margin: 0; display: inline-block;">
-				<img src="media/part1/ctrlptmoved2.png" alt="Different Bezier Curves obtained when control points are moved around with different t values." style="width: 100%; height: auto;">
-			</figure>
-			<!-- Shared caption for both images -->
-			<figcaption style="text-align: center;">Different Bezier Curves obtained when control points are moved around with different t values.</figcaption>
-		</figure>
-	</div>
-
-	<h2>Task 2: Antialiasing by Supersampling</h2>
-	<h3>Supersampling algorithm:</h3>
-	<p>First, we increased sample_buffer size to = width*height*sample rate. This ensures that the sample_buffer is
-		large enough to accommodate every subpixel that would be considered with supersampling. Then, we ran through
-		every pixel in the bounding box. For every pixel, run through each sub-pixel and determine if it's inside the
-		triangle using the inside() function. If it is, add it into the sample_buffer, assigning it with the
-		corresponding color.</p>
-	<p>After the sample_buffer is filled, resolve_to_framebuffer() is called. This function basically maps each pixel in
-		the framebuffer to all its relevant subpixels in the sample_buffer. The average color of all the subpixels for
-		that pixel is calculated, then added to the framebuffer.</p>
-	<h3>Data structures:</h3>
-	<p>Within the code, we declared a struct called Point, where
-		Point = {
-		float x, y;
-		size_t index;};</p>
-
-	<p>This allows us to populate the sample buffer easily using the index after the generation of sub-pixels (Point)
-		for each pixel. This index also later helps us find the corresponding pixel that each of these sub-pixels belong
-		to, so as to easily calculate the average color.</p>
-	<h3>Rasterization pipeline modification:</h3>
-	<p>As compared to task 1, which directly draws onto the framebuffer when it has found the correct color for each
-		pixel, we modified the pipeline as follows:
-	<ul>
-		<li>When rasterize_triangle() is called, every color of the sub-pixels is drawn onto the sample buffer</li>
-		<li>resolve_to_framebuffer() then translates the sample buffer to the frame buffer so the image is displayed
-			with the average color of sub-pixels</li>
-	</ul>
-
+	<h2>Part 2: Bezier Surfaces with Separable 1D de Casteljau (15 pts)</h2>
+	<h3>Q: Briefly explain how de Casteljau algorithm extends to Bezier surfaces and how you implemented it in order to evaluate Bezier surfaces.</h3>
+	<p>De Casteljau’s Algorithm works similarly in Bezier surfaces as in curves except that it is done in two dimensions, where many Bezier curves are first plotted with De Casteljau’s Algorithm according to their rows using provided parameter u. The resultant points on each curve acts as new control points for another run of De Casteljau’s Algorithm using another provided parameter v, which plots the Bezier surface.</p>
+	<p>Similar to Part 1, I implemented the one step De Casteljau Algorithm in bezierPatch::evaluateStep(), which returns a vector of intermediate Vector3D points as a result of linear interpolation with the provided parameter t.</p>
+	<p>
+		I then implemented evaluate1D(), which for a given vector of Vector3D control points, recursively calls evaluateStep() until only one point remains, this is the point that exists on the bezier curve for a particular row of the Bezier surface.
 	</p>
-	<h3>Supersampling to achieve antialiasing:</h3>
-	<p>When we find the average color of each pixel using sub-pixels (number dependent on sample rate), each pixel at
-		the edge of the shape is rendered as a color that lies between the two color boundaries. This creates a blurring
-		effect at the edges, and causes the overall image to look smoother and more continuous, rather than pixelated
-		and jaggy.
+	<p>
+		I then implemented evaluate(), which for each row of the 2D vector controlPoints, evaluates a point on each Bezier curve for each row given a parameter u. These points are then added to a new vector of Vector3D points and are put into evaluate1D() with a parameter of u. This creates a new Bezier curve in the column direction, which when varied across u values, plots the Bezier curve. By using De Casteljau’s Algorithm on two occasions to calculate Bezier curves in the row and column dimesions respectively, we are able to evaluate a Bezier surface.
 	</p>
+	<h3>Q: Show a screenshot of bez/teapot.bez (not .dae) evaluated by your implementation.</h3>
+
+	<img src="media/part2/bezsurface.png"
+	style="width: 50%; height: auto; display: block; margin-left: auto; margin-right: auto;" />
+
+	<h2>Part 3: Area-Weighted Vertex Normals (10 pts)</h2>
+	<h3>Q: Briefly explain how you implemented the area-weighted vertex normals.</h3>
+	<p>For the given vertex, I stored a constant iterator of its associated halfedge e, which I then traversed its next() halfedges to get the Vector3D coordinates of the other 2 points in the triangle face.</p>
+	<p>
+		Having coordinates of all 3 vertices, I found the vectors of two adjacent edges and obtained their cross products. This gives me the area-weighted normal for that particular triangle face. I then add the area-weighted normal to a initially zero vector n, which stores a running sum of area-weighted normal of the triangle faces incident to the vertex.
+	</p>
+	<p>
+		I then progress halfedge e to the next of its twin and repeat the above process until we return to the original halfedge.
+	</p>
+	<p>
+		We then normalize the vector n and return it.
+	</p>
+
 	<h3>
-		png screenshots of basic/test4.svg
+		Q: Show screenshots of dae/teapot.dae (not .bez) comparing teapot shading with and without vertex normals. Use Q to toggle default flat shading and Phong shading.
 	</h3>
+
 	<div style="display: flex; justify-content: space-around; align-items: center;">
 		<figure style="margin: 20px;">
-			<img src="media/task2/rate1.png" alt="Description of Image 1" style="width: 100%; height: auto;">
-			<figcaption style="text-align: center;">Sample Rate = 1</figcaption>
+			<img src="media/part3/reg.png" alt="Without area-weighted vertex normals" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Without area-weighted vertex normals</figcaption>
 		</figure>
 		<figure style="margin: 20px;">
-			<img src="media/task2/rate4.png" alt="Description of Image 2" style="width: 100%; height: auto;">
-			<figcaption style="text-align: center;">Sample Rate = 4</figcaption>
-		</figure>
-		<figure style="margin: 20px;">
-			<img src="media/task2/rate16.png" alt="Description of Image 3" style="width: 100%; height: auto;">
-			<figcaption style="text-align: center;">Sample Rate = 16</figcaption>
+			<img src="media/part3/phong.png" alt="With area-weighted vertex normals" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">With area-weighted vertex normals</figcaption>
 		</figure>
 	</div>
-	<p>As the sample rate increases, it can be observed that the edges of the triangle become increasingly
-		continuous,and less pixelated. This is because an increase in sample rate results in an increase in sub-pixels
-		considered for each pixel, resulting in a more accurate average value of the boundary colors that each pixel
-		represents. This causes the pixels to have a more continuous color gradient.
+
+	<h2>Task 4: Edge Flip (15 pts)</h2>
+	<h3>Q: Briefly explain how you implemented the edge flip operation and describe any interesting implementation / debugging tricks you have used.</h3>
+
+	<p>
+		I first started with an if loop to check if the edge is on a boundary loop and return the edge unchanged if it was.
+	</p>
+	<p>
+		If the edge is not a boundary loop, I then find the halfedge associated with e0 and iterate through all the halfedges in the simple mesh, saving them as iterators h1 to h6. 
+	</p>
+	<p>
+		I then found all the other elements of the simple mesh and saved them as iterators, including edges e1-e6, vertices a,b,c,d and faces f1 and f2.
+	</p>
+	<p>
+		Having drawn out the resultant mesh as a result of edge flip, I then reassigned the twin, next, vertex, edge and face pointers for all halfedges to their new values.
+	</p>
+	<p>
+		I then updated the halfedge attributes for all edges, vertices and faces to their new halfedges before returning the original edge e0.
 	</p>
 
-	<h2>Task 3: Transforms</h2>
-	<h3>myrobot.svg</h3>
-	<img src="./media/task3/task3.png"
-		style="width: 50%; height: auto; display: block; margin-left: auto; margin-right: auto;" />
-	<p>In this svg, we were trying to make the robot do the signature robot pose with its arms. To achieve this, we
-		first rotated the outer arms by 90 degrees, then changed the translation to (-50 20) and (50 -20) for the two
-		arms.</p>
 
-
-	<h2>Task 4: Barycentric Coordinates</h2>
-	<h3>What barycentric coordinates are:</h3>
-	<img src="./media/task4/triangle.png"
-		style="width: 50%; height: auto; display: block; margin-left: auto; margin-right: auto;" />
-	<p>Barycentric Coordinates linearly interpolate values at vertices, where a point in a triangle (defined by three
-		vertices) can be represented as a mathematical expression representing the proportional distances from the
-		vertices. This can be observed from the triangle image, the three vertices are colored green, yellow and red we
-		can see that the points closer to the red vertex are mostly red due to the weight of the red vertex being larger
-		than the other weights due to a closer proximity to the red vertex. The same is observed for the green and
-		yellow vertices. In the center where pixels are almost equidistant from all vertices, the color observed is a
-		blend between the three colors.</p>
-	<h3>svg/basic/test7.svg with default viewing parameters and sample rate 1</h3>
-	<img src="./media/task4/test7.png" style="width: 50%; height: auto;" />
-
-
-	<h2>Task 5: "Pixel Sampling" for Texture Mapping</h2>
-	<h3> Pixel sampling and how we implemented it to perform texture mapping
+	<h3>
+		Q: Show screenshots of a mesh before and after some edge flips.
 	</h3>
-	<p>Pixel sampling involves using barycentric coordinates to map the relative distance between the points and the 3
-		boundary coordinates in the sample and texture space relatively.</p>
-	<p>Nearest neighbor: Use barycentric coordinates to find the corresponding coordinate in the texture space, and use
-		the
-		color of that coordinate.</p>
-	<p>Bilinear neighbor: By using the relative distance of the coordinate to its 4 nearest neighbors in the texture
-		map,
-		compute two colors by using 2 linear interpolations in the horizontal space, then using the results to perform a
-		vertical interpolation to get the final color.</p>
-	<h3>Comparing bilinear sampling and nearest sampling</h3>
-	<h4>Bilinear sampling</h4>
-	<div style="display: flex; justify-content: space-around; align-items: center;margin: 0 auto; width: 70%;"">
-		<figure style=" margin: 20px;">
-		<img src="media/task5/bilinear1.png" alt="Description of Image 2" style="width: 100%; height: auto;">
-		<figcaption style="text-align: center;">Sample Rate = 1</figcaption>
-		</figure>
-		<figure style="margin: 20px;">
-			<img src="media/task5/bilinear16.png" alt="Description of Image 3" style="width: 100%; height: auto;">
-			<figcaption style="text-align: center;">Sample Rate = 16</figcaption>
-		</figure>
-	</div>
-	<h4>Nearest pixel sampling</h4>
-	<div style="display: flex; justify-content: space-around; align-items: center;margin: 0 auto; width: 70%;"">
-		<figure style=" margin: 20px;">
-		<img src="media/task5/nearest1.png" alt="Description of Image 2" style="width: 100%; height: auto;">
-		<figcaption style="text-align: center;">Sample Rate = 1</figcaption>
-		</figure>
-		<figure style="margin: 20px;">
-			<img src="media/task5/nearest16.png" alt="Description of Image 3" style="width: 100%; height: auto;">
-			<figcaption style="text-align: center;">Sample Rate = 16</figcaption>
-		</figure>
-	</div>
-	<p>At both the 1 sample per pixel and the 16 samples per pixel screenshot, we can observe that the use of bilinear
-		sampling achieves a better looking image as compared to the nearest sampling method. This would be due to the
-		linear
-		interpolation done in bilinear sampling, resulting in lower frequencies in the resultant signal as compared to
-		nearest sampling, which can result in high frequency signals and hence a less smooth image.</p>
 
-	<p>There will be a larger difference in the two methods at lower sampling rates (1 sample) as compared to higher
-		sampling rates (16 samples). This is due to the supersampling algorithm that we already have in place. This
-		means
-		that both the nearest sampling and bilinear sampling have some form of existing interpolation and the linear
-		interpolation from the bilinear sampling will be less evident.</p>
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part4/noflip.png" alt="Before edge flips" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Before edge flips</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/part4/flip.png" alt="After edge flips" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">After edge flips</figcaption>
+		</figure>
+	</div>
+
+	<h3>Q: Write about your eventful debugging journey, if you have experienced one.</h3>
+
+	<p>
+		I initially did not know that I had to update the halfedge pointer of the edges, vertices and faces and instead did the updating wrongly. This caused the faces to not update correctly and the entire face to disappear when flip edge was called.
+	</p>
+
+	<h2>Task 5: Edge Split (15 pts)</h2>
+	<h3> Q: Briefly explain how you implemented the edge split operation and describe any interesting implementation / debugging tricks you have used.
+	</h3>
+	<p>Similar to Part 4, I started with an if statement to check if the edge was a boundary edge and simply return the vertex associated with the edge’s halfedge if it did.</p>
+	<p>I again then found the halfedge associated with e0 and iterated through all the halfedges in the simple mesh, saving them as iterators h1 to h6. </p>
+	<p>I then found all the other elements of the simple mesh and saved them as iterators, including edges e1-e6, vertices a,b,c,d and faces f1 and f2.</p>
+	<p>
+		Since edge split requires the creation of new elements, I also initialized new iterators for halfedges h7-h12, vertex m, edges e7-e9 and faces f3 and f4.
+	</p>
+	<p>
+		Having drawn out the resultant mesh as a result of edge flip, I then reassigned the twin, next, vertex, edge and face pointers for all halfedges to their new values.
+	</p>
+	<p>
+		I then updated the halfedge attributes for all edges, vertices and faces to their new halfedges before returning the new vertex m.
+	</p>
+
+	<h3>Q: Show screenshots of a mesh before and after some edge splits.</h3>
+
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part5/nosplit.png" alt="Without any edge splits" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Without any edge splits</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/part5/onesplit.png" alt="With one edge split" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">With one edge split</figcaption>
+		</figure>
+	</div>
+
+	<img src="media/part5/manysplit.png"
+	style="width: 50%; height: auto; display: block; margin-left: auto; margin-right: auto;" />
+	<figcaption style="text-align: center;">With many edge splits</figcaption>
+
+	<h3>
+		Q: Show screenshots of a mesh before and after a combination of both edge splits and edge flips.
+	</h3>
+
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part5/nosplitbean.png" alt="Without any local mesh operations" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Without any local mesh operations</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/part5/edgeflipbean.png" alt="With edge splits" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">With edge splits</figcaption>
+		</figure>
+	</div>
+
+	<img src="media/part5/edgeflipsplitbean.png"
+	style="width: 50%; height: auto; display: block; margin-left: auto; margin-right: auto;" />
+	<figcaption style="text-align: center;">With edge splits & edge splits</figcaption>
+
+	<h3>
+		Q: Write about your eventful debugging journey, if you have experienced one.
+	</h3>
+
+	<p>Initially, I did not know that I needed to call newHalfEdge(), newVertex(), newEdge() and newFace() when declaring new elements for the edge split operation. This resulted in many segmentation faults and a long time checking my pointer assignments.</p>
+
+	<p>I ended up realising my mistake after reading through the halfEdgeMesh.h documentation again, which helped me realise my mistake.</p>
 
 
 
