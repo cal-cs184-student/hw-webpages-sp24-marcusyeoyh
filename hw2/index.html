@@ -220,92 +220,110 @@
 
 
 
-	<h2>Task 6: "Level Sampling" with Mipmaps for Texture Mapping</h2>
-	<h3> What level sampling is and how we implemented it for texture mapping.
+	<h2>Task 6: Loop Subdivision for Mesh Upsampling (25 pts)</h2>
+	<h3>Q: Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.
 	</h3>
-	<p>Level sampling involves storing a cache of different levels of texture samples, each with different resolutions
-		such that it can be applied to the space depending on the “stretch” of the texture. </p>
-	<p>To implement this, we first found the level (floating number) that corresponds to each pixel in the screen space.
-		To do this, we use barycentric coordinates to find the rate of change in the x and y direction of each pixel in
-		the texture space, then apply the formula to find the maximum “stretch” (L). Then, the level is computed by
-		using level (D) = log2(L).</p>
-	<p>To find a specific level, simply round D to the nearest integer.
+	<p>Firstly, using the Loop subdivision rule, I calculated the new positions for all original vertices in the mesh, saving it under the newPosition variable for each vertex. I also set the isNew variable for each vertex in the original mesh as FALSE, which will come into use in subsequent part.</p>
+	<p>Secondly, for every edge in the original mesh, I computed the new Vector3D position for each new vertex that would be created at the midpoint of the edge when splitEdge is called. The coordinates are then stored in the newPosition variable for the edge to be assigned later. I also labelled all edges in the original mesh as FALSE for their isNew variable.</p>
+	<p>I then iterated through all the edges of the original mesh and split them using splitEdge(). I then labelled the new vertex V’s isNew variable as false and its newPosition variable with the newPosition variable of the edge that has been split. I then labelled the isNew variable of the new edges created as a result of the edge split as TRUE.
 	</p>
-	<p>To compute the mipmap level as a continuous number, we first find the normalized distance (0<=s<=1) between D and
-			its neighboring levels. We then found the colors of each pixel at the upper and lower mipmap levels, and
-			computed a weighted average of the two colors using s. </p>
-			<h3>Tradeoffs between speed, memory usage, and antialiasing power between the three various techniques
-				(pixel sampling, level sampling, sample rate).
-			</h3>
+	<p>
+		I then iterated through all edges in the mesh and called flipEdge() on those edges that had isNew set as TRUE and connected one vertex with isNew as FALSE and another with isNew as TRUE. This completes the 4-1 subdivision for every triangle in the mesh.
+	</p>
+	<p>
+		I then iterated through all vertices in the mesh and updated their positions with the newPositions value.
+	</p>
+	<p>
+		During coding, I faced an issue of an infinite loop as a result of step 3. To address this, I iterated through all edges and pushed those edges who were part of the original mesh into a vector, and then iterated through all edges in the vector and split them individually. This addressed the infinite loop problem.
+	</p>
 
-			<p>Speed:
-			<ul>
-				<li>Pixel Sampling: Nearest Neighbour Sampling is the fastest since it requires accessing only a singly
-					texel from the texture. On the other hand, Bilinear filtering requires accessing four texels, and
-					trilinear filtering requires accessing eight texels across two mipmap levels, hence as complexity of
-					filtering
-					increases, speed decreases.</li>
-				<li>Level Sampling: using mipmaps can improve rendering speed because textures are sampled from
-					lower-resolution
-					images that match the screen size of the object, reducing the number of texture lookups. Mipmap
-					level
-					selection itself adds some computational overhead (get_level() fn) but is offset by reduced texture
-					sampling
-					cost.</li>
-				<li>Sample Rate: Increasing the number of samples per pixel will reduce rendering speed as they require
-					more
-					samples per pixel, which will have to be averaged out.</li>
-			</ul>
+	<h3>Q: Take some notes, as well as some screenshots, of your observations on how meshes behave after loop subdivision. What happens to sharp corners and edges? Can you reduce this effect by pre-splitting some edges?
+	</h3>
 
-	</p>
-	<p>Memory Usage:
-	<ul>
-		<li>Pixel Sampling: This is affected by the texture’s resolution and presence of mipmaps. Nearest neighbor does
-			not require much memory usage as compared to bilinear or trilinear, which have to store much more
-			information about the surrounding texels and even different mipmaps in the case of trilinear filtering</li>
-		<li>Level Sampling: mipmaps increase memory usage because they require storing additional, smaller versions of
-			the texture.</li>
-		<li>Sample Rate: increased sample counts require more memory for framebuffer storage. Supersampling increases
-			memory usage linearly with the number of samples.</li>
-	</ul>
-	</p>
-	<p>Antialiasing Power:
-	<ul>
-		<li>Pixel Sampling: No antialiasing present in nearest neighbour, hence artifacts exist. Bilinear and Trilinear
-			filtering offer improved antialiasing by smoothing out the textures and reduce the visibility of artifacts
-			such as jaggies.</li>
-		<li>Level Sampling: significantly reduced aliasing artifacts by ensuring that sampling is done from an image
-			that closely matches the pixel density of the rendered object. Trilinear filtering between mipmap levels
-			further smooths the transition between levels, offering a higher quality antialiasing effect</li>
-		<li>Sampling Rate: Increasing the number of samples directly increases antialiasing power as the more samples
-			per pixel taken means a more accurate representation of the sample image. This reduces artifacts such as
-			jaggies and moire patterns.</li>
-	</ul>
-	</p>
-	<h3>test7.svg (our own png)</h3>
-	<div style="display: flex; justify-content: space-around; align-items: center;margin: 0 auto; width: 70%;"">
-		<figure style=" margin: 20px;">
-		<img src="media/task6/zeronearest.png" alt="Description of Image 2" style="width: 100%; height: auto;">
-		<figcaption style="text-align: center;">L_ZERO and P_NEAREST</figcaption>
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part6/original.png" alt="Without any upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Without any upsampling calls</figcaption>
 		</figure>
 		<figure style="margin: 20px;">
-			<img src="media/task6/zerolinear.png" alt="Description of Image 3" style="width: 100%; height: auto;">
-			<figcaption style="text-align: center;">L_ZERO and P_LINEAR</figcaption>
-		</figure>
-	</div>
-	<div style="display: flex; justify-content: space-around; align-items: center;margin: 0 auto; width: 70%;"">
-		<figure style=" margin: 20px;">
-		<img src="media/task6/nearestnearest.png" alt="Description of Image 2" style="width: 100%; height: auto;">
-		<figcaption style="text-align: center;">L_NEAREST and P_NEAREST</figcaption>
-		</figure>
-		<figure style="margin: 20px;">
-			<img src="media/task6/nearestlinear.png" alt="Description of Image 3" style="width: 100%; height: auto;">
-			<figcaption style="text-align: center;">L_NEAREST and P_LINEAR</figcaption>
+			<img src="media/part6/onesample.png" alt="One upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">One upsampling call</figcaption>
 		</figure>
 	</div>
 
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part6/twosample.png" alt="Two upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Two upsampling calls</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/part6/threesample.png" alt="Three upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Three upsampling calls</figcaption>
+		</figure>
+	</div>
 
+	<p>
+		As we can see from the tip of the teapot spout, increasing calls of Loop subdivision smoothens out sharp corners and edges, creating a more realistic look to the mesh.
+	</p>
+	<p>
+		Yes, you can reduce this effect by pre-splitting some edges. Doing so adds more geometry to the areas you want to keep sharp, giving you more control over the final shape after subdivision. The new vertices can be placed in such a way that the averaging step of the subdivision process has less impact on the sharpness of the original edges.
+	</p>
 
+	<h3>
+		Q: Load dae/cube.dae. Perform several iterations of loop subdivision on the cube. Notice that the cube becomes slightly asymmetric after repeated subdivisions. Can you pre-process the cube with edge flips and splits so that the cube subdivides symmetrically? Document these effects and explain why they occur. Also explain how your pre-processing helps alleviate the effects.
+	</h3>
+
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part6/nosampleasym.png" alt="Without any upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Without any upsampling calls</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/part6/onesampleasym.png" alt="One upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">One upsampling call</figcaption>
+		</figure>
+	</div>
+
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part6/twosampleasym.png" alt="Two upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Two upsampling calls</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/part6/threesampleasym.png" alt="Three upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Three upsampling calls</figcaption>
+		</figure>
+	</div>
+
+	<p>
+		The asymmetrical shape as a result of repeated subdivision is due to each face on the cube not having symmetrical edges due to the diagonal edge across each face, which does not point in the same direction for all faces. Hence when splitEdge() is called on each edge, it results in an asymmetrical splitting of the edges in the original cube, and since vertex position is determined by surrounding position of nearby vertices, the subdivision process will exacerbate these discrepancies due surrounding vectors not all being equidistant from the vertex, resulting in uneven weights.
+	</p>
+
+	<h3>
+		We can hence alleviate the effects by ensuring that each face of the cube has identical edge splits:
+	</h3>
+
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part6/nosamplesym.png" alt="Without any upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Without any upsampling calls</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/part6/onesamplesym.png" alt="One upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">One upsampling call</figcaption>
+		</figure>
+	</div>
+
+	<div style="display: flex; justify-content: space-around; align-items: center;">
+		<figure style="margin: 20px;">
+			<img src="media/part6/twosamplesym.png" alt="Two upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Two upsampling calls</figcaption>
+		</figure>
+		<figure style="margin: 20px;">
+			<img src="media/part6/threesamplesym.png" alt="Three upsampling calls" style="width: 100%; height: auto;">
+			<figcaption style="text-align: center;">Three upsampling calls</figcaption>
+		</figure>
+	</div>
 </body>
 
 </html>
