@@ -46,42 +46,7 @@
 <!-- Add Website URL -->
 <h2 align="middle">Website URL: <a href="https://cal-cs184-student.github.io/hw-webpages-sp24-marcusyeoyh/hw3/index.html">https://cal-cs184-student.github.io/hw-webpages-sp24-marcusyeoyh/hw3/index.html</a></h2>
 
-<br><br>
-
-
-<div align="center">
-  <table style="width=100%">
-      <tr>
-          <td align="middle">
-          <img src="images/example_image.png" width="480px" />
-          <figcaption align="middle">Results Caption: my bunny is the bounciest bunny</figcaption>
-      </tr>
-  </table>
-</div>
-
-<p>All of the text in your write-up should be <em>in your own words</em>. If you need to add additional HTML features to this document, you can search the <a href="http://www.w3schools.com/">http://www.w3schools.com/</a> website for instructions. To edit the HTML, you can just copy and paste existing chunks and fill in the text and image file names appropriately.</p>
-<o>The website writeup is intended to be a self-contained walkthrough of the assignment: we want this to be a piece of work which showcases your understanding of relevant concepts through both mesh images as well as written explanations about what you did to complete each part of the assignment. Try to be as clear and organized as possible when writing about your own output files or extensions to the assignment. We want to understand what you've achieved and how you've done it!</p> 
-<p>If you are well-versed in web development, feel free to ditch this template and make a better looking page.</p>
-
-
-<p>Here are a few problems students have encountered in the past. Test your website on the instructional machines early!</p>
-<ul>
-<li>Your main report page should be called index.html.</li>
-<li>Be sure to include and turn in all of the other files (such as images) that are linked in your report!</li>
-<li>Use only <em>relative</em> paths to files, such as <pre>"./images/image.jpg"</pre>
-Do <em>NOT</em> use absolute paths, such as <pre>"/Users/student/Desktop/image.jpg"</pre></li>
-<li>Pay close attention to your filename extensions. Remember that on UNIX systems (such as the instructional machines), capitalization matters. <pre>.png != .jpeg != .jpg != .JPG</pre></li>
-<li>Be sure to adjust the permissions on your files so that they are world readable. For more information on this please see this tutorial: <a href="http://www.grymoire.com/Unix/Permissions.html">http://www.grymoire.com/Unix/Permissions.html</a></li>
-<li>And again, test your website on the instructional machines early!</li>
-</ul>
-
-
-<p>Here is an example of how to include a simple formula:</p>
-<p align="middle"><pre align="middle">a^2 + b^2 = c^2</pre></p>
-<p>or, alternatively, you can include an SVG image of a LaTex formula.</p>
-
-<div>
-
+<br>
 <h2 align="middle">Overview</h2>
 <p>
     YOUR RESPONSE GOES HERE
@@ -96,16 +61,37 @@ Show images with normal shading for a few small .dae files. -->
 <h3>
   Walk through the ray generation and primitive intersection parts of the rendering pipeline.
 </h3>
+<h4>
+  Ray Generation
+</h4>
 <p>
-    YOUR RESPONSE GOES HERE
+    In task 1, I first converted hFov and vFov from degrees into radians, which was then used to calculate the top right x and y coordinates of the camera space using tan(0.5*hFov) and tan(0.5*vFov), referred to as <i>TopX</i> and <i>TopY</i>. Since we are given coordinates in the image space [0,1] X [0,1], we need to convert them into the camera space. This was done by normalizing the x and y values by deducting 0.5 from each coordinate before multiplying the resultant value by 2*TopX for the x coordinate and 2*TopY for the y coordinate. This gives us an accurate conversion from the image space to the camera space, adding a Z coordinate of -1 since we are now in 3D space. Since the camera origin is at (0,0,0), the point we have calculated is the direction vector of the ray. We then multiply with the c2w matrix provided to transform this direction vector into the world space.
 </p>
-<br>
-
-<h3>
-  Explain the triangle intersection algorithm you implemented in your own words.
-</h3>
 <p>
-    YOUR RESPONSE GOES HERE
+  Thereafter, in task 2, I implemented <code>raytrace_pixel()</code>, where <i>ns_aa</i> samples were taken given a input pixel using <code>gridSampler->get_sample()</code>. The sample coordinates were then normalized to image space before being passed into the function in Task 1 to obtain a sample ray. I then estimated the radiance of the ray using <code>est_radiance_global_illumination()</code> and used Monte Carlo Integration to find the final value of each pixel.
+</p>
+
+<h4>
+  Primitive Intersection: Ray-Triangle Intersection
+</h4>
+<p>
+  To test for triangle intersection in <code>has_intersection()</code>, I implemnted the Möller-Trumbore ray-triangle intersection algorithm taught in lecture to find the values of t, b1 and b2. I then checked if the t value was within <code>r.min_t</code> and <code>r.max_t</code>, as well as if the values of b1, b2 and 1-b1-b2 were within 0 and 1 inclusive. If all the conditions were met, this means that there is a intersection between the ray and triangle, and I return true and update <code>r.max_t</code> with the t value, if not, I return false.
+</p>
+<p>
+  Implementation of <code>intersect()</code> was exactly the same as <code>has_intersection()</code>, except when a point of intersection was found between the ray and the triangle, I would populate the <code>Intersection *isect</code> structure with the necessary information, calculating the surface normal at the intersection using barycentric coordinates and the provided vertex normals of the triangle. I once again update <code>r.max_t</code> with the t value if a point of intersection is found.
+</p>
+
+<h4>
+  Primitive Intersection: Ray-Sphere Intersection
+</h4>
+<p>
+  Using the formula from the lectures, i implemented <code>test()</code>, to test if a ray intersected a given sphere and updated the provided parameters <code>t1</code> and <code>t2</code> with the calculated t values if a intersection was found, with <code>t1</code> being the smaller value and <code>t2</code> being the larger. Using the discriminant formula, I was able to check if there was one intersection (D==0), two intersections (D>0) or no intersections (D<0) and return true or false, as well as update the t1 and t2 values accordingly.
+</p>
+<p>
+  <code>has_intersection()</code> was then implemented by calling the <code>test()</code> function, and if a intersection was found, the <code>r.max_t</code> value would be updated to <code>t1</code>, since t1 is the smaller value.
+</p>
+<p>
+  <code>intersection()</code> was similarly implmented using <code>test()</code> and if a valid intersection was found, the <code>Intersection *isect</code> structure was updated, with the surface normal of the sphere computed using the normalized vector pointing from the sphere center to the intersection point.
 </p>
 <br>
 
@@ -113,31 +99,26 @@ Show images with normal shading for a few small .dae files. -->
   Show images with normal shading for a few small .dae files.
 </h3>
 <!-- Example of including multiple figures -->
-<div align="middle">
+<div align="center">
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example1.dae</figcaption>
+        <img src="media/Part 1/bench.png" align="middle" width="400px"/>
+        <figcaption>bench.dae</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example2.dae</figcaption>
+        <img src="media/Part 1/CBbunny.png" align="middle" width="400px"/>
+        <figcaption>CBbunny.dae</figcaption>
       </td>
     </tr>
     <tr align="center">
-      <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example3.dae</figcaption>
-      </td>
-      <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example4.dae</figcaption>
+      <td colspan="2"> <!-- Use colspan attribute here -->
+        <img src="media/Part 1/CBspheres.png" align="middle" width="400px"/>
+        <figcaption>CBspheres.dae</figcaption>
       </td>
     </tr>
   </table>
 </div>
-<br>
 
 
 <h2 align="middle">Part 2: Bounding Volume Hierarchy (20 Points)</h2>
