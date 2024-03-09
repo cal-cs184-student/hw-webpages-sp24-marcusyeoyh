@@ -110,9 +110,7 @@ Show images with normal shading for a few small .dae files. -->
         <img src="media/Part 1/CBbunny.png" align="middle" width="400px"/>
         <figcaption>CBbunny.dae</figcaption>
       </td>
-    </tr>
-    <tr align="center">
-      <td colspan="2"> <!-- Use colspan attribute here -->
+      <td>
         <img src="media/Part 1/CBspheres.png" align="middle" width="400px"/>
         <figcaption>CBspheres.dae</figcaption>
       </td>
@@ -130,7 +128,18 @@ Compare rendering times on a few scenes with moderately complex geometries with 
   Walk through your BVH construction algorithm. Explain the heuristic you chose for picking the splitting point.
 </h3>
 <p>
-    YOUR RESPONSE GOES HERE
+    For the given Start and End iterators, I ran through all the primitives to be included in the BVH and got their BBoxes and expanded them into a large BBox variable <code>bbox</code>. I then created a new BVHNode and assigned the bbox variable to it, as well as the start and end pointers with the provided Start and End iterators.
+</p>
+
+<p>
+  I then checked if the number of primitives between the Start and End iterators were equal or less than the <code>max_leaf_size</code>. If they were, that would mean we have found a leaf node and the function can terminate after assigning the left and right pointers as NULL.
+</p>
+
+<p>
+  If there are more primitives in the bounding box than <code>max_leaf_size</code>, then we would need to find a suitable axis to split the bounding box into. The heuristic I chose was to find the mean centroid position of all the bounding boxes of the primitives. The mean centroid position was chosen instead of the median as it is a lot more efficient to find the mean as compared to the median position, which involves sorting. Thereafter, I iterated through all the primitives again to find the variance of each axis according to the distribution of the primitives. I chose the axis with the most variance to split along. This was done as the axis with more variance would mean a more definitive seperation of the primitives, resulting in more efficient ray-bounding box tests as splitting along an axis with the least variance would mean more overlap in the resultant bounding boxes and hence more costly ray-bounding box tests.
+</p>
+<p>
+  After an axis was chosen, I sorted the primitives based on their axis positions and split them along the mean centroid position, gaining a middle iterator Middle. I then recursively called <code>construct_bvh</code> for the left and right child of the current BVHNode where the primitives are partitioned from start to middle for the left node and middle to end for the right node.
 </p>
 
 <h3>
@@ -141,22 +150,16 @@ Compare rendering times on a few scenes with moderately complex geometries with 
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example1.dae</figcaption>
+        <img src="media/Part 2/walle.png" align="middle" width="400px"/>
+        <figcaption>wall-e.dae</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example2.dae</figcaption>
-      </td>
-    </tr>
-    <tr align="center">
-      <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example3.dae</figcaption>
+        <img src="media/Part 2/maxplanck.png" align="middle" width="400px"/>
+        <figcaption>maxplanck.dae</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example4.dae</figcaption>
+        <img src="media/Part 2/CBdragon.png" align="middle" width="400px"/>
+        <figcaption>CBdragon.dae</figcaption>
       </td>
     </tr>
   </table>
@@ -167,7 +170,7 @@ Compare rendering times on a few scenes with moderately complex geometries with 
   Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis.
 </h3>
 <p>
-    YOUR RESPONSE GOES HERE
+    When comparing rendering times on scenes with complex geometries, the implementation of BVH acceleration has tremendously sped up rendering times. For example, the Wall-E graphic, which took 346.5125 seconds to render with brute force took only 0.0357 seconds to render with BVH Acceleration. This is also shown in the CBdragon rendering times, where without BVH acceleration, it took 109.9390 seconds to render and only 0.0357 seconds to render with acceleration.
 </p>
 <br>
 
