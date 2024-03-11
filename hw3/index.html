@@ -183,8 +183,23 @@ Compare the results between uniform hemisphere sampling and lighting sampling in
 <h3>
   Walk through both implementations of the direct lighting function.
 </h3>
+<h4>
+  Uniform Hemisphere Sampling
+</h4>
 <p>
-    YOUR RESPONSE GOES HERE
+    In order to get the lighting at a particular point, we need to first measure the amount of irradiance that falls on that point from surrounding light sources. We then scale the irradiance by the BSDF variable <code>f</code> in order to get the radiance that is going towards the camera at a given point.
+</p>
+<p>
+  To estimate the irradiance on a point using uniform hemisphere sampling, we first need to take <code>num_samples</code> samples of incoming solid angles over the unit hemisphere. This was done by calling the <code>get_sample()</code> function of the <code>hemisphereSampler</code> variable of the pathtracer and is given a variable name <code>w_in</code>. It is important to note that this direction vector is in the object space. For each sample, we obtain the <code>costheta</code> value by finding the dot product between <code>w_in</code> and the Z axis as well as the BSDF value from the <code>isect</code> input variable. I then constructed a Ray object <code>nRay</code> and assigned the origin and direction vector to <code>hit_p</code> and <code>o2w*w_in</code> respetively, remembering to convert the <code>w_in</code> variable from object space to world space, as well as setting the <code>min_t</code> value as <code>EPS_F</code>. I then created a new Intersecion variable <code>nI</code> and if <code>costheta</code> was >0 (meaning direction sample is in front of the surface and not behind) and there is an intersect between <code>nRay</code> and a primitive in the bvh, I would save the emmission from that closest primitive to a vector L, before multiplying it by the BSDF value and <code>costheta</code> and adding it to <code>L_out</code> as the iterative step of the reflection equation.
+</p>
+<p>
+  After all samples are finished, we then complete the reflection equation by multiplying <code>L_out</code> with 2PI and dividing by <code>num_samples</code>, since the sampling of solid angles was from a uniform distribution and a hemisphere has a possible 2PI solid angles to choose from. <code>L_out</code> is then returned.
+</p>
+<h4>
+  Importance Sampling Lights
+</h4>
+<p>
+  The algorithm for light sampling is quite similar to the unit hemisphere sampling algorithm. However instead of taking number of lights * <code>ns_area_light</code> uniform samples from a hemisphere, we will iterate through all the lights in the scene and if it is a point light source, we only take one sample, and if it is an area light source, we take <code>ns_area_light</code> samples using the <code>i->sample_L()</code> for each light i. This provides us with the necessary emission, <code>w_i</code>, distance to light and <code>pdf</code> values we need. We then construct a ray again with <code>hit_p</code> and <code>w_i</code>, and set the <code>min_t</code> of the ray as <code>EPS_F</code> and <code>max_t</code> as <code>distToLight - EPS_F</code>. We then similarly test for intersection between the point and the light source, however in this case if we have an intersecion, it means the light is blocked and we do not add the emmission value to the sample total. If there are no intersections, we add the iterative term of the reflection equation to <code>curL</code>, which includes the <code>pdf</code> variable this time since we are no longer doing uniform sampling. We then add each Monte Carlo Estimate for each light source to <code>L_out</code> and return it after all lights have been processed.
 </p>
 
 <h3>
@@ -205,23 +220,23 @@ Compare the results between uniform hemisphere sampling and lighting sampling in
     <br>
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example1.dae</figcaption>
+        <img src="media/Part 3/CBbunny_H_64_32.png" align="middle" width="400px"/>
+        <figcaption>CBbunny.dae</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example1.dae</figcaption>
+        <img src="media/Part 3/bunny_64_32.png" align="middle" width="400px"/>
+        <figcaption>CBbunny.dae</figcaption>
       </td>
     </tr>
     <br>
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example2.dae</figcaption>
+        <img src="media/Part 3/CBgems_H_64_32.png" align="middle" width="400px"/>
+        <figcaption>CBgems.dae</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example2.dae</figcaption>
+        <img src="media/Part 3/gems_64_32.png" align="middle" width="400px"/>
+        <figcaption>CBgems.dae</figcaption>
       </td>
     </tr>
     <br>
@@ -237,28 +252,28 @@ Compare the results between uniform hemisphere sampling and lighting sampling in
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="200px"/>
+        <img src="media/Part 3/1ray_coil_64_32.png" align="middle" width="200px"/>
         <figcaption>1 Light Ray (example1.dae)</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="200px"/>
+        <img src="media/Part 3/4ray_coil_64_32.png" align="middle" width="200px"/>
         <figcaption>4 Light Rays (example1.dae)</figcaption>
       </td>
     </tr>
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="200px"/>
+        <img src="media/Part 3/16ray_coil_64_32.png" align="middle" width="200px"/>
         <figcaption>16 Light Rays (example1.dae)</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="200px"/>
+        <img src="media/Part 3/64ray_coil_64_32.png" align="middle" width="200px"/>
         <figcaption>64 Light Rays (example1.dae)</figcaption>
       </td>
     </tr>
   </table>
 </div>
 <p>
-    YOUR EXPLANATION GOES HERE
+    We can observe that there is much more noise when the number of rays is low (1 and 4) as compared to when the number of rays are higher (16 and 64 rays). This is because as the number of rays projected increases, we will get a better estimate from the Monte Carlo Estimator, since variance of the estimate falls as number of samples increases. Hence the more rays we project, the better the range of light and surface interaction is accounted for.
 </p>
 <br>
 
@@ -266,7 +281,10 @@ Compare the results between uniform hemisphere sampling and lighting sampling in
   Compare the results between uniform hemisphere sampling and lighting sampling in a one-paragraph analysis.
 </h3>
 <p>
-    YOUR RESPONSE GOES HERE
+    From the renders, we can tell that the uniform hemisphere sampling method is more noisy and seems darker as compared to the light sampling. This is because sampling randomly from a hemisphere means that more of then than not the solid angles sampled will not point towards a light source, especially when there are few light sources or if the light source has a small surface area. This means the intersection tests carried out is less likely to hit a light source and return the emmission from it. This will affect the estimate of the irradiance on a point, especially if coupled with a low sample count.
+</p>
+<p>
+  Since importance sampling only samples from light sources, which directly contributes to the amount of irradiance on a point, it allows for better estimation, since we are simply checking if a sample direction from the point to a particular light source is blocked or not.
 </p>
 <br>
 
