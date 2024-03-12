@@ -301,7 +301,10 @@ You will probably want to use the instructional machines for the above renders i
   Walk through your implementation of the indirect lighting function.
 </h3>
 <p>
-    YOUR RESPONSE GOES HERE
+    Firstly I edited the <code>raytrace_pixel</code> function to set <code>r.depth</code> for every ray created as <code>max_ray_depth</code>. In the <code>at_least_one_bounce_radiance()</code> function itself, I first checked if <code>isAccumBounces</code> was true. If it is, we add the <code>one_bounce_radiance()</code> of the point to L_out and then conduct Global Illumination with Russian Roulette, with termination probability set at 0.35. If the coin flip succeeds, the code is similar to Part 3, where we use <code>sample_f</code> to get a sample <code>wi</code> direction vector and <code>pdf</code> value. We then similarly construct a Ray object and set the depth to <code>r.depth - 1</code> and if the <code>r.depth</code> value is above 1, it means we still have more bounces to compute and we enter the recursive step by calling <code>at_least_one_bounce_radiance()</code> again. If the <code>r.depth</code> value is 1 or we hit a tails on the coin flip, we terminate the recursion and return the <code>one_bounce_radiance()</code> value. When returning from the recursion, we multiply the incoming radiance by the BSDF value, <code>costheta</code> value and divide by <code>pdf</code> and <code>cpdf</code> and add it to <code>L_out</code> as the iterative step of the reflection equation.
+</p>
+<p>
+  If <code>isAccumBounces</code> is false, we similarly traverse recursively until we reach the <code>max_ray_depth</code> and return the <code>one_bounce_radiance()</code> value. For every recursive step, we again multiply the incoming radiance by the BSDF value, <code>costheta</code> value and divide by <code>pdf</code> and add it to <code>L_out</code> as the iterative step of the reflection equation.
 </p>
 <br>
 
@@ -448,7 +451,13 @@ Pick one scene and render it with at least 2048 samples per pixel. Show a good s
   Explain adaptive sampling. Walk through your implementation of the adaptive sampling.
 </h3>
 <p>
-    YOUR RESPONSE GOES HERE
+    Adaptive Sampling is a algorithm that allows us to sample more in regions of the image that are more noisy and sample less in regions that are less noisy. Since some pixels converge faster with low sampling rates while other pixels require more samples, we can dynamically adjust the number of samples per pixel based on the convergence value <code>I</code> of the pixel. Doing so reduces noise and speeds up rendering times.
+</p>
+<p>
+  In <code>raytrace_pixel()</code>, I introduced two variables n and batch, which were used to keep track of the number of samples taken so far, and the number of samples in the current batch. For every sample, I checked if the <code>batch</code> value is equal to <code>samplesPerBatch</code>. If it is, we calculate values for <code>mu</code>, <code>var</code> and <code>I</code> using formulas given in the question. We then check if the <code>I</code> is smaller or equal to <code>maxTolerance*mu</code>. If it is, we can stop taking more samples and break the cycle, if not we will take more samples until <code>batch</code> value is equal to <code>samplesPerBatch</code> again.
+</p> 
+<p>
+  While <code>batch != samplesPerBatch</code> the implementation of <code>raytrace_pixel()</code> is exactly the same, except where we find <code>float illum = estimate.illum()</code> and update s1 and s2 with the <code>illum</code> value as needed. After exiting the loop, we divide total by the number of samples taken n and update the samplebuffer. We also update <code>sampleCountBuffer[x + y * sampleBuffer.w] = n</code>.
 </p>
 <br>
 
