@@ -316,12 +316,12 @@ You will probably want to use the instructional machines for the above renders i
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example1.dae</figcaption>
+        <img src="media/Part 4/bunny1024.png" align="middle" width="400px"/>
+        <figcaption>CBbunny.dae</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>example2.dae</figcaption>
+        <img src="media/Part 4/spheres1024.png" align="middle" width="400px"/>
+        <figcaption>CBspheres.dae</figcaption>
       </td>
     </tr>
   </table>
@@ -336,51 +336,148 @@ You will probably want to use the instructional machines for the above renders i
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>Only direct illumination (example1.dae)</figcaption>
+        <img src="media/Part 4/gems_onebounce.png" align="middle" width="400px"/>
+        <figcaption>Only direct illumination (CBgems.dae)</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>Only indirect illumination (example1.dae)</figcaption>
+        <img src="media/Part 4/gems_morethanonebounce.png" align="middle" width="400px"/>
+        <figcaption>Only indirect illumination (CBgems.dae)</figcaption>
       </td>
     </tr>
   </table>
 </div>
 <br>
+<h4>
+  Only Direct Illumination
+</h4>
 <p>
-    YOUR EXPLANATION GOES HERE
+    Direct Illumination only accounts for Single-Bounce illumination, which are light rays that come off the light source, hit a surface and then reach the camera. This gives us the most pronounced features of the final image, such as the shadows and color of the walls. The light source is not visible since light rays directly from the light source are under Zero-Bounce illumination and are not accounted for in the direct illumination.
+</p>
+<h4>
+  Only Indirect Illumination
+</h4>
+<p>
+  Indirect Illumination accounts for all N-1 bounces of light rays after First Bounce Illumination, with N being dependent on what we set <code>max_ray_depth</code> to. These are light rays that have bounced off 2 or more surfaces before reaching the camera, with their end radiance being the result of many applications of the reflection equation, depending on how many bounces the light ray has taken. 
+</p>
+<p>
+  We can see that Indirect Illumination creates a somewhat back-lit appearance to the scene, allowing us to see features like the ceiling of the box, which because is parallel to the light source, is not visible in the Direct Illumination image. Additionally, we can see that shadows are less pronounced due to the light rays being reflected off surfaces and landing on spots that are directly under the light source. Normally these spots would be completely black as observed in Direct Illumination, however Indirect Illumination accounts for reflected light rays that land on these covered surfaces and when combined with Direct Illumination, creates a softer shadow which is more consistent with what we see in the real world, rather than a completely black shadow.
 </p>
 <br>
 
 <h3>
-  For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). Use 1024 samples per pixel.
+  For CBbunny.dae, render the mth bounce of light with max_ray_depth set to 0, 1, 2, 3, 4, and 5 (the -m flag), and isAccumBounces=false. Explain in your writeup what you see for the 2nd and 3rd bounce of light, and how it contributes to the quality of the rendered image compared to rasterization. Use 1024 samples per pixel.
 </h3>
 <!-- Example of including multiple figures -->
 <div align="middle">
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
+        <img src="media/part4/non-accum/bunny00.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 0 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
+        <img src="media/part4/non-accum/bunny01.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 1 (CBbunny.dae)</figcaption>
+      </td>
+      <td>
+        <img src="media/part4/non-accum/bunny02.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 2 (CBbunny.dae)</figcaption>
+      </td>
+    </tr>
+    <tr align="center">
+      
+      <td>
+        <img src="media/part4/non-accum/bunny03.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 3 (CBbunny.dae)</figcaption>
+      </td>
+      <td>
+        <img src="media/part4/non-accum/bunny04.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 4 (CBbunny.dae)</figcaption>
+      </td>
+      <td>
+        <img src="media/part4/non-accum/bunny05.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 5 (CBbunny.dae)</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<br>
+<p>
+  YOUR EXPLANATION GOES HERE
+</p>
+<br>
+
+<h3>
+  For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, 4, and 5(the -m flag). Use 1024 samples per pixel.
+</h3>
+<!-- Example of including multiple figures -->
+<div align="middle">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/part4/accum/bunny10.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 0 (CBbunny.dae)</figcaption>
+      </td>
+      <td>
+        <img src="media/part4/accum/bunny11.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 1 (CBbunny.dae)</figcaption>
+      </td>
+      <td>
+        <img src="media/part4/accum/bunny12.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 2 (CBbunny.dae)</figcaption>
+      </td>
+    </tr>
+    <tr align="center">
+      
+      <td>
+        <img src="media/part4/accum/bunny13.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 3 (CBbunny.dae)</figcaption>
+      </td>
+      <td>
+        <img src="media/part4/accum/bunny14.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 4 (CBbunny.dae)</figcaption>
+      </td>
+      <td>
+        <img src="media/part4/accum/bunny15.png" align="middle" width="400px" />
+        <figcaption>max_ray_depth = 5 (CBbunny.dae)</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<br>
+<p>
+  YOUR EXPLANATION GOES HERE
+</p>
+<br>
+<h3>
+  For CBbunny.dae, output the Russian Roulette rendering with max_ray_depth set to 0, 1, 2, 3, 4, and 100(the -m flag). Use 1024 samples per pixel.
+</h3>
+<!-- Example of including multiple figures -->
+<div align="middle">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part 4/bunny1024_m0.png" align="middle" width="400px"/>
+        <figcaption>max_ray_depth = 0 (CBbunny.dae)</figcaption>
+      </td>
+      <td>
+        <img src="media/Part 4/bunny1024_m1.png" align="middle" width="400px"/>
         <figcaption>max_ray_depth = 1 (CBbunny.dae)</figcaption>
       </td>
     </tr>
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
+        <img src="media/Part 4/bunny1024_m2.png" align="middle" width="400px"/>
         <figcaption>max_ray_depth = 2 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
+        <img src="media/Part 4/bunny1024_m3.png" align="middle" width="400px"/>
         <figcaption>max_ray_depth = 3 (CBbunny.dae)</figcaption>
       </td>
     </tr>
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
+        <img src="media/Part 4/bunny1024_m100.png" align="middle" width="400px"/>
         <figcaption>max_ray_depth = 100 (CBbunny.dae)</figcaption>
       </td>
     </tr>
@@ -388,7 +485,7 @@ You will probably want to use the instructional machines for the above renders i
 </div>
 <br>
 <p>
-    YOUR EXPLANATION GOES HERE
+    As we can observe, as we increase the max_ray_depth, the brightness of the image seems to increase and the shadows get less dark and pronounced. This is consistent with what happens in the real world as the more bounces of light we have, the more light is reflected and the more light is able to reach the camera. max_ray_depth = 0 is a black image with only the light source visible since it only accounts for zero-bounce illumination, which are the rays of light coming directly into the camera from the light source. max_ray_depth = 1 accounts for both zero bounce and one bounce illumination, which produces very pronounced shadows if the light source is not directly visible. max_ray_depth > 1 accounts for indirect illumination, which is the light that is reflected off surfaces and then reaches the camera.
 </p>
 <br>
 
@@ -400,45 +497,45 @@ You will probably want to use the instructional machines for the above renders i
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>1 sample per pixel (example1.dae)</figcaption>
+        <img src="media/Part 4/lucy_s1.png" align="middle" width="400px"/>
+        <figcaption>1 sample per pixel (CBlucy.dae)</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>2 samples per pixel (example1.dae)</figcaption>
-      </td>
-    </tr>
-    <tr align="center">
-      <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>4 samples per pixel (example1.dae)</figcaption>
-      </td>
-      <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>8 samples per pixel (example1.dae)</figcaption>
+        <img src="media/Part 4/lucy_s2.png" align="middle" width="400px"/>
+        <figcaption>2 samples per pixel (CBlucy.dae)</figcaption>
       </td>
     </tr>
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>16 samples per pixel (example1.dae)</figcaption>
+        <img src="media/Part 4/lucy_s4.png" align="middle" width="400px"/>
+        <figcaption>4 samples per pixel (CBlucy.dae)</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>64 samples per pixel (example1.dae)</figcaption>
+        <img src="media/Part 4/lucy_s8.png" align="middle" width="400px"/>
+        <figcaption>8 samples per pixel (CBlucy.dae)</figcaption>
       </td>
     </tr>
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>1024 samples per pixel (example1.dae)</figcaption>
+        <img src="media/Part 4/lucy_s16.png" align="middle" width="400px"/>
+        <figcaption>16 samples per pixel (CBlucy.dae)</figcaption>
+      </td>
+      <td>
+        <img src="media/Part 4/lucy_s64.png" align="middle" width="400px"/>
+        <figcaption>64 samples per pixel (CBlucy.dae)</figcaption>
+      </td>
+    </tr>
+    <tr align="center">
+      <td>
+        <img src="media/Part 4/lucy_s1024.png" align="middle" width="400px"/>
+        <figcaption>1024 samples per pixel (CBlucy.dae)</figcaption>
       </td>
     </tr>
   </table>
 </div>
 <br>
 <p>
-    YOUR EXPLANATION GOES HERE
+    As observed, as we increase the number of samples per pixel, we get a huge decrease in the amount of noise present in the image. The more samples we take, the better we can estimate the radiance at a given point, and the less variance there is in the estimate. This is especially important in scenes with complex geometries and lighting, where the amount of light and surface interaction is more varied and hence more difficult to estimate.
 </p>
 <br>
 
