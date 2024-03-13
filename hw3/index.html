@@ -101,7 +101,7 @@ Show images with normal shading for a few small .dae files. -->
 <h3>
   Show images with normal shading for a few small .dae files.
 </h3>
-<!-- Example of including multiple figures -->
+
 <div align="center">
   <table style="width:100%">
     <tr align="center">
@@ -113,13 +113,16 @@ Show images with normal shading for a few small .dae files. -->
         <img src="media/Part 1/CBbunny.png" align="middle" width="400px"/>
         <figcaption>CBbunny.dae</figcaption>
       </td>
-      <td>
+    </tr>
+    <tr align="center">
+      <td colspan="2" style="text-align:center;"> 
         <img src="media/Part 1/CBspheres.png" align="middle" width="400px"/>
         <figcaption>CBspheres.dae</figcaption>
       </td>
     </tr>
   </table>
 </div>
+
 
 
 <h2 align="middle">Part 2: Bounding Volume Hierarchy (20 Points)</h2>
@@ -160,13 +163,16 @@ Compare rendering times on a few scenes with moderately complex geometries with 
         <img src="media/Part 2/maxplanck.png" align="middle" width="400px"/>
         <figcaption>maxplanck.dae</figcaption>
       </td>
-      <td>
+    </tr>
+    <tr align="center">
+      <td colspan="3" style="text-align:center;"> 
         <img src="media/Part 2/CBdragon.png" align="middle" width="400px"/>
         <figcaption>CBdragon.dae</figcaption>
       </td>
     </tr>
   </table>
 </div>
+
 <br>
 
 <h3>
@@ -371,6 +377,7 @@ You will probably want to use the instructional machines for the above renders i
   For CBbunny.dae, render the mth bounce of light with max_ray_depth set to 0, 1, 2, 3, 4, and 5 (the -m flag), and isAccumBounces=false. Explain in your writeup what you see for the 2nd and 3rd bounce of light, and how it contributes to the quality of the rendered image compared to rasterization. Use 1024 samples per pixel.
 </h3>
 <!-- Example of including multiple figures -->
+
 <div align="middle">
   <table style="width:100%">
     <tr align="center">
@@ -382,17 +389,18 @@ You will probably want to use the instructional machines for the above renders i
         <img src="media/Part 4/bunny_m1_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 1 (CBbunny.dae)</figcaption>
       </td>
+    </tr>
+    <tr align="center">
       <td>
         <img src="media/Part 4/bunny_m2_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 2 (CBbunny.dae)</figcaption>
       </td>
-    </tr>
-    <tr align="center">
-      
       <td>
         <img src="media/Part 4/bunny_m3_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 3 (CBbunny.dae)</figcaption>
       </td>
+    </tr>
+    <tr align="center">
       <td>
         <img src="media/Part 4/bunny_m4_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 4 (CBbunny.dae)</figcaption>
@@ -404,6 +412,7 @@ You will probably want to use the instructional machines for the above renders i
     </tr>
   </table>
 </div>
+
 <br>
 <p>
   In the 2nd and 3rd bounce of light, we can see that the image is getting darker progressively, where the shadows are less pronounced. This is because the 2nd and 3rd bounce of light are accounting for the light rays that are reflected off surfaces two and three times before reaching the camera, resulting in a brighter combined image with smoother shadows. The images are progressively darker due to the surfaces being made of diffuse material. Hence with every bounce, the BSDF of the surface being less than 1, will result in the radiance of the outgoing ray being less than the incoming ray, resulting in a darker image. 
@@ -428,17 +437,18 @@ You will probably want to use the instructional machines for the above renders i
         <img src="media/Part 4/bunny_m1_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 1 (CBbunny.dae)</figcaption>
       </td>
+    </tr>
+    <tr align="center">
       <td>
         <img src="media/Part 4/bunny_m2_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 2 (CBbunny.dae)</figcaption>
       </td>
-    </tr>
-    <tr align="center">
-      
       <td>
         <img src="media/Part 4/bunny_m3_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 3 (CBbunny.dae)</figcaption>
       </td>
+    </tr>
+    <tr align="center">
       <td>
         <img src="media/Part 4/bunny_m4_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 4 (CBbunny.dae)</figcaption>
@@ -450,6 +460,7 @@ You will probably want to use the instructional machines for the above renders i
     </tr>
   </table>
 </div>
+
 <br>
 <p>
   Here, we can see the accumulation of light rays that have at most N bounces depending on what max_ray_depth is set to. As we increase the max_ray_depth, the brightness of the image seems to increase and the shadows get less dark and pronounced. This is consistent with what happens in the real world as the more bounces of light we have, the more light is reflected and the more light is able to reach the camera.
