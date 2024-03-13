@@ -372,30 +372,30 @@ You will probably want to use the instructional machines for the above renders i
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="media/part4/non-accum/bunny00.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m0_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 0 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="media/part4/non-accum/bunny01.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m1_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 1 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="media/part4/non-accum/bunny02.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m2_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 2 (CBbunny.dae)</figcaption>
       </td>
     </tr>
     <tr align="center">
       
       <td>
-        <img src="media/part4/non-accum/bunny03.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m3_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 3 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="media/part4/non-accum/bunny04.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m4_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 4 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="media/part4/non-accum/bunny05.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m5_o0.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 5 (CBbunny.dae)</figcaption>
       </td>
     </tr>
@@ -403,7 +403,10 @@ You will probably want to use the instructional machines for the above renders i
 </div>
 <br>
 <p>
-  YOUR EXPLANATION GOES HERE
+  In the 2nd and 3rd bounce of light, we can see that the image is getting darker progressively, where the shadows are less pronounced. This is because the 2nd and 3rd bounce of light are accounting for the light rays that are reflected off surfaces two and three times before reaching the camera, resulting in a brighter combined image with smoother shadows. The images are progressively darker due to the surfaces being made of diffuse material. Hence with every bounce, the BSDF of the surface being less than 1, will result in the radiance of the outgoing ray being less than the incoming ray, resulting in a darker image. 
+</p>
+<p>
+  This is a stark contrast to rasterization, where only the light rays that are directly visible to the camera are accounted for, and light rays that are reflected off surfaces are not accounted for, resulting in a less realistic image. This is especially true for scenes with complex geometries and light sources, where the light rays that are reflected off surfaces are able to reach the camera and contribute to create a more vibrant and realistic final image.
 </p>
 <br>
 
@@ -415,30 +418,30 @@ You will probably want to use the instructional machines for the above renders i
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="media/part4/accum/bunny10.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m0_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 0 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="media/part4/accum/bunny11.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m1_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 1 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="media/part4/accum/bunny12.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m2_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 2 (CBbunny.dae)</figcaption>
       </td>
     </tr>
     <tr align="center">
       
       <td>
-        <img src="media/part4/accum/bunny13.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m3_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 3 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="media/part4/accum/bunny14.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m4_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 4 (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="media/part4/accum/bunny15.png" align="middle" width="400px" />
+        <img src="media/Part 4/bunny_m5_o1.png" align="middle" width="400px" />
         <figcaption>max_ray_depth = 5 (CBbunny.dae)</figcaption>
       </td>
     </tr>
@@ -446,7 +449,7 @@ You will probably want to use the instructional machines for the above renders i
 </div>
 <br>
 <p>
-  YOUR EXPLANATION GOES HERE
+  Here, we can see the accumulation of light rays that have at most N bounces depending on what max_ray_depth is set to. As we increase the max_ray_depth, the brightness of the image seems to increase and the shadows get less dark and pronounced. This is consistent with what happens in the real world as the more bounces of light we have, the more light is reflected and the more light is able to reach the camera.
 </p>
 <br>
 <h3>
@@ -566,22 +569,22 @@ Pick one scene and render it with at least 2048 samples per pixel. Show a good s
   <table style="width:100%">
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>Rendered image (example1.dae)</figcaption>
+        <img src="media/Part 4/bunny2048.png" align="middle" width="400px"/>
+        <figcaption>Rendered image (CBbunny.dae)</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>Sample rate image (example1.dae)</figcaption>
+        <img src="media/Part 4/bunny2048_rate.png" align="middle" width="400px"/>
+        <figcaption>Sample rate image (CBbunny.dae)</figcaption>
       </td>
     </tr>
     <tr align="center">
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>Rendered image (example2.dae)</figcaption>
+        <img src="media/Part 4/walle2048.png" align="middle" width="400px"/>
+        <figcaption>Rendered image (wall-e.dae)</figcaption>
       </td>
       <td>
-        <img src="images/your_file.png" align="middle" width="400px"/>
-        <figcaption>Sample rate image (example2.dae)</figcaption>
+        <img src="media/Part 4/walle2048_rate.png" align="middle" width="400px"/>
+        <figcaption>Sample rate image (wall-e.dae)</figcaption>
       </td>
     </tr>
   </table>
