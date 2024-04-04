@@ -116,9 +116,19 @@
 </p>
 <h3>What about for damping?</h3>
 <p>
-  In motion, the cloth with higher % dampening is observed to fall slower than one with less % dampening, taking more time to come to its resting position. The cloth with 
+  In motion, the cloth with higher % dampening is observed to fall slower, but reach its resting position much faster than one with less % dampening. This is because the cloth with less dampening oscillates back and forth quickly and creases, taking more time to come to rest. This is to be expected as a higher dampening % decreases the displacement of each point mass in the cloth, reducing motion of the cloth at a greater rate.
 </p>
 <h3>For each of the above, observe any noticeable differences in the cloth compared to the default parameters and show us some screenshots of those interesting differences and describe when they occur.</h3>
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part2/default.png" align="middle" width="400px"/>
+        <figcaption>Default Cloth</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
 <div align="center">
   <table style="width:100%">
     <tr align="center">
@@ -133,5 +143,40 @@
     </tr>
   </table>
 </div>
+
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part2/low_density.png" align="middle" width="400px"/>
+        <figcaption>Low density value (density = 1 g/cm^2)</figcaption>
+      </td>
+      <td>
+        <img src="media/Part2/high_density.png" align="middle" width="400px"/>
+        <figcaption>High density value (density = 1000 g/cm^2)</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part2/low_dampening.png" align="middle" width="400px"/>
+        <figcaption>Low dampening value (dampening = 0.00%)</figcaption>
+      </td>
+      <td>
+        <img src="media/Part2/high_dampening.png" align="middle" width="400px"/>
+        <figcaption>High dampening value (dampening = 1.00%)</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<p>
+  Discussed earlier, we can observe how a higher spring constant ks seems stiffer and sags less, leads to less deformation of the cloth. We can observe how a higher density value does the opposite and deforms the cloth more, with more and larger creases observed, leading to the impression that the cloth is 'heaver'. We can also see how a low dampening value cloth oscillates multiple times before coming to rest, which takes more time than a cloth with a high dampening value.
+</p>
+<br>
+<h2 align="middle">Part III: Handling collisions with other objects</h2>
 </body>
 </html>
