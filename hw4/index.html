@@ -216,5 +216,77 @@
   <img src="media/Part3/rest.png" align="middle" width="100%">
   <figcaption>Shaded cloth at rest on the plane</figcaption>
 </div>
+<br>
+
+<h2 align="middle">Part IV: Handling self-collisions</h2>
+
+<h3>
+  Show us at least 3 screenshots that document how your cloth falls and folds on itself, starting with an early, initial self-collision and ending with the cloth at a more restful state (even if it is still slightly bouncy on the ground).
+</h3>
+
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part4/self_col1.png" align="middle" width="400px"/>
+        <figcaption>Self Collision 1</figcaption>
+      </td>
+      <td>
+        <img src="media/Part4/self_col2.png" align="middle" width="400px"/>
+        <figcaption>Self Collision 2</figcaption>
+      </td>
+      <td>
+        <img src="media/Part4/self_col3.png" align="middle" width="400px"/>
+        <figcaption>Self Collision 3</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>
+  Vary the density as well as ks and describe with words and screenshots how they affect the behavior of the cloth as it falls on itself.
+</h3>
+
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part4/low_density.png" align="middle" width="400px"/>
+        <figcaption>Low Density (5 g/cm^2)</figcaption>
+      </td>
+      <td>
+        <img src="media/Part4/high_density.png" align="middle" width="400px"/>
+        <figcaption>High Density (5000 g/cm^2)</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<p>
+  When density is low, we can observe that there are large folds throughout the cloth as it falls. This is in stark contrast to the cloth with high density, where most of the folds are concentrated to the bottom of the cloth and smaller, less obvious creases are seen throughout the upper part of the cloth.
+</p>
+<p>
+  At rest, the cloth with smaller density has fewer folds and seems to have more flat areas. On the other hand, the cloth with higher density is more crumpled and creased when lying on the plane.
+</p>
+<br>
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part4/low_ks.png" align="middle" width="400px"/>
+        <figcaption>Low ks (1000 N/m)</figcaption>
+      </td>
+      <td>
+        <img src="media/Part4/high_ks.png" align="middle" width="400px"/>
+        <figcaption>High ks (10,000 g/cm^2)</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>
+  In motion, the cloth with a smaller ks value has more creases as compared to a cloth with a higher ks value. At rest, the cloth with smaller ks value seems more crumpled and compressed, while the cloth with a higher ks value has fewer creases with more flat areas.
+</p>
+<p>This is consistent with the fact that a higher ks value means a greater spring constant and hence less deformation in the cloth as it falls onto itself.</p>
+
 </body>
 </html>
