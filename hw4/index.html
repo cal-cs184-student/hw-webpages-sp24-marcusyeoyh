@@ -292,6 +292,71 @@
   In motion, the cloth with a smaller ks value has more creases as compared to a cloth with a higher ks value. At rest, the cloth with smaller ks value seems more crumpled and compressed, while the cloth with a higher ks value has fewer creases with more flat areas.
 </p>
 <p>This is consistent with the fact that a higher ks value means a greater spring constant and hence less deformation in the cloth as it falls onto itself.</p>
+<br>
+<h2 align="middle">Part V: Cloth Sim</h2>
+<h3>Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.</h3>
+<p>
+  A shader program is a computer program designed to run on the GPU to render various graphics, including lighting, shadowing and reflections.
+</p>
+<p>
+  A Vertex Shader processes each vertex of a 3D model individually and transforms each vertex from model space to screen space by scaling, rotating, and translating based on the camera's perspective.
+</p>
+<p>
+  Fragment Shaders operate on fragments to determine their final color on the screen. The fragment shader uses information passed from the vertex shader (like v_normal, v_position and v_uv) along with lighting information (like u_cam_pos and u_light_intensity) to calculate how light interacts with the surfaces of objects. This includes computing diffuse and specular reflections, shadowing, and texture mapping. The output is the color of each pixel, a vec4 output (rgba), which gives the colour and texture of each pixel in the resultant render.
+</p>
+<h3>Explain the Blinn-Phong shading model in your own words.</h3>
+<p>The Blinn-Phong shading model adds on to the diffuse light shading model by adding shaders to account for ambient lighting and specular lighting. This creates a more realistic render by accounting for other lighting factors that influence how an object will look like in real life. The ambient lighting is accounted for by finding ka*Ia, and the specular lighting formula is similar to the diffused light formula, but instead of the unit vector l from the vector to the light source, we use unit vector h, which is the bisector of v and l</p>
 
+<h3>Show a screenshot of your Blinn-Phong shader outputting only the ambient component, a screen shot only outputting the diffuse component, a screen shot only outputting the specular component, and one using the entire Blinn-Phong model.</h3>
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part5/ambient.png" align="middle" width="400px"/>
+        <figcaption>Ambient Shader</figcaption>
+      </td>
+      <td>
+        <img src="media/Part5/diffuse.png" align="middle" width="400px"/>
+        <figcaption>Diffuse Shader</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part5/specular.png" align="middle" width="400px"/>
+        <figcaption>Specular Shader</figcaption>
+      </td>
+      <td>
+        <img src="media/Part5/phong.png" align="middle" width="400px"/>
+        <figcaption>Complete Blinn-Phong Model</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>Show a screenshot of your texture mapping shader using your own custom texture by modifying the textures in /textures/.</h3>
+<div align="middle">
+  <img src="media/Part5/texture.png" align="middle" width="100%">
+  <figcaption>Texture mapping using Texture 4</figcaption>
+</div>
+
+<h3>Show a screenshot of bump mapping on the cloth and on the sphere.</h3>
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part5/bump_cloth.png" align="middle" width="400px"/>
+        <figcaption>Bump mapping on cloth</figcaption>
+      </td>
+      <td>
+        <img src="media/Part5/bump_sphere.png" align="middle" width="400px"/>
+        <figcaption>Bump mapping on sphere</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
 </body>
 </html>
