@@ -36,7 +36,18 @@
 <div>
 
 <h2 align="middle">Overview</h2>
-<p>Give a high-level overview of what you implemented in this project. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the project.</p>
+<p>
+  This project gave me the opportunity to learn how I can use point masses and springs to simulate the physical representation of a cloth using computer graphics. I was able to learn how external forces and forces due to other springs would affect the motion and behaviour of point masses, simulating a frame-by-frame representation of the cloth under various conditions.
+</p>
+<p>
+  I learned to apply sphere and plane intersection techniques with a point mass to determine if there was contact between the cloth and an object. This allowed the cloth to react realistically with its surroundings and even itself in the case of self-collisions.
+</p>
+<p>
+  I also learned the formulas and how to apply Blinn-Phong shading on the object to create a cloth that not only acted physically accurately, but also looked physically correct under different lighting conditions. Techniques like Bump shading, Displacement shading and Mirror shading also allowed me to learn more about various techniques to make my cloth and sphere look more accurate and life-like.
+</p>
+<p>
+  This project has really piqued my interest in physics based computer graphics and I am really excited to learn more and possibly apply this into my final project!
+</p>
 
 <h2 align="middle">Part I: Masses and springs</h2>
 <h3>Take some screenshots of <i>scene/pinned2.json</i> from a viewing angle where you can clearly see the cloth wireframe to show the structure of your point masses and springs.</h3>
@@ -354,6 +365,77 @@
       <td>
         <img src="media/Part5/bump_sphere.png" align="middle" width="400px"/>
         <figcaption>Bump mapping on sphere</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<h3>Show a screenshot of displacement mapping on the sphere.</h3>
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part5/displace_cloth.png" align="middle" width="400px"/>
+        <figcaption>Displacement mapping on cloth</figcaption>
+      </td>
+      <td>
+        <img src="media/Part5/displace_sphere.png" align="middle" width="400px"/>
+        <figcaption>Displacement mapping on sphere</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<h3>Compare the two approaches and resulting renders in your own words.</h3>
+<p>As seen from the renders, we can clearly see that the physical structure of the sphere has been changed in displacement mapping as compared to it just being visually simulated in bump mapping (the sphere remains smooth). This gives the sphere and cloth more realism and looks more life-like.</p>
+<p>This is due to bump mapping only changing the surface normals of the individual vertices depending on the texture mappings provided, hence we can see the details on the skin of the sphere, but not the geometry</p>
+<p>On the other hand, displacement mapping changes the actual position of the vertices in addition to their normals. This provides both the visual and physical effect of an uneven surface.</p>
+
+<h3>Compare how your the two shaders react to the sphere by changing the sphere mesh's coarseness by using -o 16 -a 16 and then -o 128 -a 128.</h3>
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part5/bump16.png" align="middle" width="400px"/>
+        <figcaption>Bump mapping on sphere at -o16 -a16</figcaption>
+      </td>
+      <td>
+        <img src="media/Part5/bump128.png" align="middle" width="400px"/>
+        <figcaption>Bump mapping on sphere at -o128 -a128</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part5/displace16.png" align="middle" width="400px"/>
+        <figcaption>Displacement mapping on sphere at -o16 -a16</figcaption>
+      </td>
+      <td>
+        <img src="media/Part5/displace128.png" align="middle" width="400px"/>
+        <figcaption>Displacement mapping on sphere at -o128 -a128</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<p>
+  From my observations, in bump mapping, the increase in resolution due to the reduction of coarseness results in a higher definition and smoother sphere, it does not affect the way the texture on the sphere is displayed since bump mapping only affects the surface normal of each vertex and how the texture is rasterized to the screen, hence the only geometric change is that of the sphere itself.
+</p>
+<p>
+  For displacement mapping, we can see how lesser coarseness of the mesh allows for more detailed geometric shape of the sphere as the changes in position in each vertex due to displacement mapping is more pronounced. This makes the resultant sphere look more lifelike and realistic, as compared to the more coarse mesh, where the concave and convex aspects of the sphere are less pronounced.
+</p>
+
+<h3>Show a screenshot of your mirror shader on the cloth and on the sphere.</h3>
+<div align="center">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="media/Part5/mirror_cloth.png" align="middle" width="400px"/>
+        <figcaption>Mirror shader on cloth</figcaption>
+      </td>
+      <td>
+        <img src="media/Part5/mirror_sphere.png" align="middle" width="400px"/>
+        <figcaption>Mirror shader on sphere</figcaption>
       </td>
     </tr>
   </table>
