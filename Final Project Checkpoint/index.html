@@ -1,0 +1,185 @@
+<html>
+
+<head>
+	<title>CS184 Homework 1 Writeup</title>
+</head>
+
+<body style="margin: 30 auto; width: 80%">
+	<h1>CS184 Final Project Proposal</h1>
+    <h2>Title: Infinite rendering of grass with realistic motion simulation</h2>
+	<h3>Group Members: Ong Jing Xuan, Marcus Yeo, Chay Hui Xiang, Lim Sui Kiat</h3>
+	<p><i>Hosted on:
+			<a href="https://cal-cs184-student.github.io/hw-webpages-sp24-marcusyeoyh/Final%20Project%20Proposal/index.html"
+				target="_blank">https://cal-cs184-student.github.io/hw-webpages-sp24-marcusyeoyh/Final%20Project%20Proposal/index.html</a>
+		</i></p>
+    <h2>
+        Summary:
+    </h2>
+    <p>
+        Being interested in physical simulation in computer graphics, particularly how video games simulate natural terrain, we decided to base our project around a common terrain type: grass. Through simulating how individual grass blades interact with each other in the presence of wind and external forces, we hope to gain a better appreciation for game development and the simulation of physics in computer graphics
+    </p>
+    
+	<h2>Problem Description:</h2>
+    <p>
+        Modern environmental simulations in games require high-quality grass rendering. In particular, grass rendering is especially challenging due to the physical constraints involved (wind motions, interactions with external objects, infinite rendering etc.). We plan to tackle the project in 3 different phases:
+        <ol>
+            <li>Rendering infinite grass objects (without motion and swaying)</li>
+            <li>Adding motion to the infinite grass objects</li>
+            <li>Optimisation of the program performance</li>
+        </ol>
+    </p>
+
+    <h2>Goals & Deliverables:</h2>
+    <h3>Video Demo:</h3>
+    <p>
+        We aim to create a demo with a flying camera showcasing the landscape and how the individual grass blades interact with each other and the surroundings that they are in.
+    </p>
+
+    <h3>How we will measure performance/quality of the system:</h3>
+    <ul style="list-style-type: square;">
+        <li>
+            Performance metrics:
+            <ul>
+                <li>
+                    FPS measurements & rendering speed
+                </li>
+                <li>
+                    CPU utilization
+                </li>
+            </ul>
+        </li>
+        <li>
+            Aesthetics metrics:
+            <ul>
+                <li>
+                    Different shader/views of the grass blades
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>
+        Questions we plan to answer with our analysis:
+    </h3>
+    <ul style="list-style-type: square;">
+        <li>
+            What are the different ways to render grass within a grass cluster and what is the best way to achieve the best possible aesthetic outcome?
+        </li>
+        <li>
+            Noise should be added to each grass cluster to vary:
+
+            <ol>
+                <li>
+                    The position of the grass cluster
+                </li>
+                <li>
+                    The height of the grass within the grass cluster
+                </li>
+                <li>
+                    The wind motions acting on the grass
+                </li>
+            </ol>
+            How does noise affect the visual aesthetic of the grass render, and what are the optimal values for best performance and aesthetics?
+        </li>
+        <li>
+            What are the different ways to optimize the performance of the grass render?
+        </li>
+    </ul>
+
+    <h3>What we plan to deliver:</h3>
+
+    <ul style="list-style-type: square;">
+        <li>
+            We plan to deliver a physics-accurate simulation of a grass terrain, where the grass should:
+            <ol>
+                <li>
+                    Look natural and void of clusters
+                </li>
+                <li>
+                    Accurately simulate physical reactions to stimuli due to varying wind speeds from various directions
+                </li>
+                <li>
+                    Look sufficiently populated
+                </li>
+            </ol>
+        </li>
+        <li>
+            We also plan to deliver performance analysis and comparisons based on our mentioned variables (e.g. glass clustering, height), and figure out what is the optimal rendering method based on performance metrics such as rendering speed, CPU usage etc.
+        </li>
+    </ul>
+
+    <h3>
+        What we hope to deliver:
+    </h3>
+    <p>
+        If time permits, we plan to add static objects in the terrain to model different reactions (e.g. foot stepping on the grass and how it folds, etc.)
+    </p>
+
+    <h2>
+        Schedule:
+    </h2>
+    <ul style="list-style-type: square;">
+        <li>
+        Week 1: Project setup
+        <ul>
+            <li>
+                Familiarizing ourselves with Unity dev environment
+            </li>
+            <li>
+                Learning how to instantiate particles, add physics stimulation and set up terrain
+            </li>
+        </ul>
+        </li>
+        <li>
+            Week 2: Infinite rendering of grass without motion
+            <ul>
+                <li>
+                    Preparation of grass objects [texture, object mesh, object arrangement, clustering] 
+                </li>
+                <li>
+                    Perform texture mapping and object transformations to populate terrain and render realistic grass objects
+                </li>
+            </ul>
+        </li>
+        <li>
+            Week 3: Adding motion to grass (wind & swaying)
+            <ul>
+                <li>
+                    Perform trigonometric calculations to determine center position of clusters and objects 
+                </li>
+                <li>
+                    Real time rendering of animation based on wind speed and direction
+                </li>
+            </ul>
+        </li>
+        <li>
+            Week 4: Performance optimisation, program testing and implementing miscellaneous features / external objects
+            <ul>
+                <li>
+                    Perform comparisons based on variations in cluster size and shape, height of grass objects, and variations in wind motion
+                </li>
+                <li>
+                    Perform performance testing based on different rendering 
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Resources:</h2>
+    <ul style="list-style-type: square;">
+        <li>
+            <a href="https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-7-rendering-countless-blades-waving-grass"
+            target="_blank">NVIDIA article on rendering countless waves of grass</a>
+        </li>
+        <li>
+            <a href="https://www.youtube.com/watch?v=Y0Ko0kvwfgA&ab_channel=Acerola"
+            target="_blank">Acerola breakdown of NVIDIA article</a>
+        </li>
+    </ul>
+
+    
+
+
+</body>
+
+</html>
